@@ -1,355 +1,273 @@
-\section{Literature Review}
-\label{sec:literature-review}
+\section{Executive Summary / Abstract}
+\label{sec:abstract}
 
-\subsection{Introduction and Scope}
-\label{subsec:literature-introduction}
+Post-training---supervised fine-tuning followed by reinforcement learning from human feedback---turns a raw next-token predictor into a chatbot that follows instructions, refuses harmful requests, and adopts a conversational register. Although the behavioural effects of this transformation are well documented, its representational effects remain poorly understood: does post-training carve new concepts into the model, or does it merely re-weight and re-route the conceptual vocabulary that pre-training already laid down? This question matters for alignment, since interventions targeting ``safety features'' only make sense if such features exist as discrete entities that post-training has put there.
 
-One of the central challenges in modern machine learning research is understanding how large language models represent and process information internally. Although these models demonstrate increasingly strong capabilities, their internal computations remain difficult to interpret because individual neurons often respond to multiple seemingly unrelated inputs. This makes neuron-level inspection an unreliable way to recover the concepts a model has learned. Recent work in mechanistic interpretability has begun to address this opacity by developing methods that operate at the level of features rather than neurons, with sparse autoencoders emerging as one of the most promising tools for this purpose \parencite{elhage_toy_2022, templeton_scaling_2024}.
+This thesis investigates that question by directly comparing the feature dictionaries of the Gemma 3 1B base and instruction-tuned checkpoints, using Sparse Autoencoders (SAEs) from the Gemma Scope 2 release as the interpretability substrate. At residual-stream layer 13, features extracted from the two models are matched on two complementary criteria---decoder-direction cosine similarity and per-sequence activation correlation---and classified as preserved, modified, PT-exclusive, or IT-exclusive. Selected features are then labelled by two independent LLMs, Claude Haiku 4.5 and GPT-4.1-nano, filtered by inter-model consensus, probed against safety and instruction-following prompts using Welch's $t$-test on differential activations, and finally subjected to causal verification via norm-calibrated activation steering.
 
-At the same time, the models most users interact with are not raw pre-trained systems. Before deployment, they typically undergo post-training procedures such as supervised fine-tuning (SFT) and reinforcement learning from human feedback (RLHF), which reshape their behaviour to make them more helpful, aligned, and conversational \parencite{ouyang_training_2022}. What remains less clear is how deeply these behavioural improvements alter the model's internal representations. This literature review therefore examines three connected strands of research: interpretability work on superposition and sparse autoencoders, alignment work on post-training, and emerging mechanistic studies of what post-training changes internally. A concise summary of the most directly relevant studies is provided in Appendix~\ref{sec:appendix-literature-summary}.
+The central finding supports what this thesis calls the ``wrapper hypothesis.'' At moderate matching thresholds ($\tau_d = 0.7$, $\tau_a = 0.3$), only about 3\% of features are strictly preserved while about 49\% are modified, meaning that they share a clear geometric counterpart across models but differ in how they fire. Crucially, when the safety- and instruction-relevant IT features surfaced by the targeted analysis are traced back to the matching results, the majority turn out to have a PT match rather than being IT-exclusive. Steering experiments confirm this picture causally: features that the matching pipeline labels as IT-exclusive produce graded behavioural changes when injected into the base model, but so do features that already existed in the base. On this evidence, post-training looks less like a sculptor adding new material and more like a conductor rebalancing an existing orchestra.
 
-\subsection{Superposition and Sparse Autoencoders}
-\label{subsec:superposition-saes}
+The contribution is threefold: first, a reproducible end-to-end SAE comparison pipeline for paired base/IT checkpoints, including an explicit treatment of threshold sensitivity; second, a cross-model labelling protocol that uses inter-LLM agreement as a confidence filter rather than relying on a single annotator; and third, an application of Gemma Scope 2 SAEs to PT-vs-IT comparison on Gemma 3 1B, with results that alignment-by-steering work can use directly. The findings suggest that interpretability work aimed at safety should focus less on hunting for newly created alignment features and more on understanding how post-training reorganises pre-existing ones.
 
-Neural networks face a basic representational constraint: they must encode a very large number of concepts using a comparatively limited number of dimensions. \textcite{elhage_toy_2022} show that one way networks resolve this tension is through \textit{superposition}, in which many features are stored as nearly orthogonal directions in activation space rather than being assigned cleanly to individual neurons. This helps explain why neurons are frequently polysemantic: a single neuron can participate in representing multiple unrelated concepts, making direct neuron-level interpretation both noisy and incomplete.
+\section{Problem and Motivation}
+\label{sec:problem-motivation}
 
-Sparse autoencoders (SAEs) were introduced as a practical way to address this problem by decomposing dense activations into a sparse set of latent features that are often more interpretable than the original neurons. Rather than asking what one neuron means, SAEs attempt to recover a higher-dimensional feature dictionary in which individual features correspond more closely to coherent concepts. This approach has substantially advanced feature-level interpretability in large language models. In particular, \textcite{templeton_scaling_2024} applied SAEs at scale to Claude 3 Sonnet and reported millions of interpretable features. Importantly, they also showed that manipulating these features could causally change model behaviour, which suggests that the recovered feature dictionaries are not merely descriptive artefacts but capture functionally meaningful structure inside the model.
+Modern instruction-tuned LLMs are released as monolithic black boxes, but they are assembled in two distinct stages. Pre-training, which absorbs very large web-scale corpora, builds the model's broad linguistic and world knowledge. Post-training---typically supervised fine-tuning on demonstration data followed by RLHF or DPO---runs for a tiny fraction of that compute and yet is responsible for almost everything users care about: instruction-following, helpful tone, refusal of harmful requests, and conversational format \parencite{ouyang_training_2022, rafailov_direct_2024}.
 
-Taken together, this line of work provides both the theoretical and methodological foundation for the present study. If superposition obscures the model's conceptual organisation at the neuron level, and if SAEs can recover a more interpretable feature basis, then SAEs offer a viable way to compare how a model's internal feature landscape differs before and after post-training.
+That disproportion between cost and effect is suspicious. \textcite{jain_mechanistically_2024} coined the ``wrapper hypothesis'' to describe one possible explanation: rather than installing genuinely new circuitry, post-training learns a thin wrapper that re-routes and amplifies capabilities the base model already possessed. Sleeper-agent results, the brittleness of refusal behaviour under jailbreaks, and the ease with which fine-tuning can undo safety training all point in the same direction \parencite{hubinger_sleeper_2024, zou_universal_2023}: alignment may be a shallow, removable layer rather than a deep rewrite.
 
-\subsection{Post-Training and the Superficial Alignment Hypothesis}
-\label{subsec:post-training-superficial-alignment}
+If the wrapper hypothesis is correct, it has direct consequences for AI safety research. Activation steering and feature ablation techniques that aim to make models safer by manipulating ``safety features'' rest on the implicit assumption that such features exist as discrete, post-training-introduced objects. If, instead, safety behaviour is implemented by modulating features that pre-training already learned, then the same interventions need to target modulation patterns rather than feature presence, and red-teaming has to assume that capabilities are never truly removed, only down-weighted.
 
-Modern language models are typically transformed into usable assistants through post-training. Two of the most influential post-training stages are supervised fine-tuning, which teaches the model to follow curated instruction-response examples, and RLHF, which further shapes responses toward human preferences \parencite{ouyang_training_2022}. This pipeline has been shown to produce large gains in helpfulness, harmlessness, and instruction-following behaviour even without changing the base architecture.
+Despite its importance, the wrapper hypothesis has mostly been tested indirectly through behavioural probing, linear-probe comparisons, or activation-norm studies. None of these operate at the level of interpretable units of computation. Sparse Autoencoders, which decompose dense activations into sparse, monosemantic features, finally make it possible to ask the question at the right granularity: do the conceptual vocabularies of the base and instruction-tuned model differ, and if so how?
 
-What is less clear is whether post-training creates genuinely new capabilities or mainly changes how pre-existing capabilities are expressed. \textcite{zhou_lima_2023} argue for a strong version of the latter view. Their \textit{LIMA} results suggest that fine-tuning on only 1,000 carefully curated examples, without reinforcement learning, can already yield strong alignment-style improvements. Their interpretation is that most knowledge and core capability are established during pre-training, while post-training primarily adjusts style, formatting, and behavioural presentation. This idea is closely related to what is often called the \textit{superficial alignment hypothesis}: the claim that post-training modifies the surface behaviour of a model more than its underlying competence.
+The motivation for this thesis is to take that question seriously and answer it for one publicly available model pair where every ingredient---base checkpoint, IT checkpoint, and pre-trained SAEs for both---already exists as an open release.
 
-If this interpretation is correct, then alignment should not be understood primarily as writing new knowledge into the model. Instead, it would act more like a behavioural interface layered onto existing representations. That raises a mechanistic question that remains insufficiently answered in the literature: what, precisely, changes at the representational level when post-training improves instruction-following and refusal behaviour?
+\section{Prior Art and Research Question}
+\label{sec:prior-art}
 
-\subsection{Mechanistic Effects of Post-Training}
-\label{subsec:mechanistic-effects-post-training}
+Three intersecting lines of work inform this study.
 
-Recent mechanistic studies suggest that post-training may leave much of the model's internal structure intact while selectively modifying a smaller set of behaviourally important mechanisms. \textcite{du_how_2025} examine post-training through four lenses: knowledge representation, truthfulness, refusal behaviour, and confidence calibration. Their results indicate that the effects of post-training are uneven rather than uniform. Factual knowledge storage appears largely preserved, and truthfulness-related representations remain substantially similar across base and post-trained models. By contrast, refusal behaviour changes more noticeably, with post-training strengthening activation-space directions associated with rejecting harmful or disallowed requests.
+\textbf{Mechanistic interpretability and SAEs.} The line from early circuits work through the superposition literature and the Anthropic dictionary-learning agenda established SAEs as the leading tool for recovering monosemantic features from polysemantic neurons \parencite{elhage_toy_2022, bricken_monosemanticity_2023}. JumpReLU SAEs addressed shrinkage problems in earlier $L_1$-penalised variants \parencite{rajamanoharan_improving_2024}, and Gemma Scope released pre-trained SAEs for Gemma-family models, removing the need for researchers to train their own from scratch \parencite{lieberum_gemma_2024}. SAEBench then provided standardised quality metrics for evaluating SAE quality \parencite{karvonen_saebench_2025}. Cross-model SAE comparison, however, remains comparatively under-tooled.
 
-These findings support the view that post-training often works by adjusting control-related mechanisms rather than rebuilding the model from first principles. In other words, pre-training may establish a large share of the representational substrate, while post-training amplifies, suppresses, or reroutes particular behavioural tendencies. However, the literature has not yet fully connected this insight to feature-level interpretability. Existing mechanistic analyses identify broad representational continuities and some behaviour-specific differences, but they do not yet provide a systematic account of how the interpretable feature dictionary itself changes across training stages.
+\textbf{Post-training mechanics.} InstructGPT and DPO established the now-standard SFT plus preference-optimisation pipeline \parencite{ouyang_training_2022, rafailov_direct_2024}. Mechanistic work suggests that post-training reshapes refusal, truthfulness, and confidence without looking like a wholesale rewrite of the model's internal machinery \parencite{du_how_2025}. \textcite{jain_mechanistically_2024} made the wrapper hypothesis explicit on procedurally defined tasks, while \textcite{xu_tracking_nodate} tracked feature dynamics across pre-training itself. Crosscoders and later work on feature attribution offer an alternative methodology that jointly trains a shared dictionary across model pairs \parencite{lindsey_crosscoders_2024, minder_crosscoder_2025}, but no public PT-vs-IT crosscoder for Gemma 3 is currently available.
 
-\subsection{Research Gap}
-\label{subsec:research-gap}
+\textbf{Safety features and steering.} \textcite{templeton_scaling_2024} showed that interpretable features in production models include refusal- and deception-related directions, and that steering them produces predictable behavioural changes. This result underpins much of the alignment-by-interpretation programme. What that programme has not yet pinned down is whether these features are post-training artefacts or pre-existing structures that post-training merely highlights.
 
-The literature establishes two important points. First, SAEs now make it possible to recover large numbers of interpretable features from language models and to test some of those features causally \parencite{templeton_scaling_2024}. Second, post-training can substantially alter outward behaviour while leaving much of the internal representational structure learned in pre-training relatively intact \parencite{zhou_lima_2023, du_how_2025}. The gap lies in combining these two developments.
+\textbf{The gap.} No published work, to the best of this thesis's search process, takes a publicly available paired base/IT model release and runs the full SAE-comparison pipeline---match, classify, label, and causally verify---to test the wrapper hypothesis at the level of individual features. Gemma 3 1B plus Gemma Scope 2 makes this finally tractable on a student-budget compute envelope.
 
-What remains underexplored is how the SAE feature landscape changes across post-training. Does post-training create genuinely new features for behaviours such as instruction-following and refusal? Does it suppress pre-existing harmful or unaligned features? Or does it leave the underlying feature set mostly intact while changing when and how those features are activated? Answering these questions would provide a more mechanistic account of the relationship between pre-training, alignment, and behavioural change.
+\textbf{Research question.} Does instruction tuning of Gemma 3 1B introduce qualitatively new features into the model's residual-stream representations at layer 13, or does it predominantly reorganise and re-weight features that already exist in the pre-trained base?
 
-This study addresses that gap by comparing the feature dictionaries of base and instruction-tuned variants of the same model family using pre-trained sparse autoencoders. The objective is to determine whether post-training primarily creates new features, suppresses existing ones, or reorganises the activation patterns of an already established feature landscape.
+This question is operationalised through three sub-questions:
+\begin{itemize}
+    \item RQ1: What proportion of features at layer 13 of Gemma 3 1B are preserved, modified, PT-exclusive, or IT-exclusive between the base and IT checkpoints, and how robust is that proportion to the choice of matching thresholds?
+    \item RQ2: When the IT model is probed with safety-relevant and instruction-following prompts, do the most differentially active features map onto IT-exclusive entries, as a strict-creation reading would predict, or onto features that the matching pipeline already paired with a PT counterpart?
+    \item RQ3: Does causal manipulation via activation steering of the features identified in RQ2 produce the behavioural changes that their labels predict, in both the base and IT models?
+\end{itemize}
+
+\section{Main Contribution}
+\label{sec:main-contribution}
+
+In one sentence, this thesis provides an end-to-end empirical test of the wrapper hypothesis on a publicly available paired base/IT release using Sparse Autoencoders, and finds evidence that post-training of Gemma 3 1B at layer 13 reorganises pre-existing features rather than installing new ones.
+
+The deliverables of that contribution are:
+\begin{enumerate}
+    \item A reproducible pipeline (\texttt{Capstone\_Gemma\_3.ipynb}) that, starting from the published Gemma 3 1B checkpoints and the Gemma Scope 2 SAE release, performs activation collection, dual-direction feature matching, four-way classification, threshold sensitivity analysis, dual-LLM consensus labelling, targeted differential analysis on safety and instruction prompts, and norm-calibrated activation steering.
+    \item A characterisation of Gemma 3 1B layer-13 feature reorganisation across a $5 \times 5$ grid of matching thresholds, showing that the modified category dominates regardless of threshold choice.
+    \item A cross-LLM consensus labelling protocol, using Claude Haiku 4.5 and GPT-4.1-nano, that yields a 59.5\% inter-model agreement rate and exposes systematic confusions that a single-annotator pipeline would miss.
+    \item A targeted analysis on JailbreakBench, Stanford Alpaca, and TruthfulQA showing that the majority of safety- and instruction-differential IT features identified by Welch's $t$-test have a PT match rather than being IT-exclusive.
+    \item Causal verification via norm-calibrated activation steering on six selected features plus dose-response curves on two modified features, showing graded behavioural changes consistent with the wrapper reading.
+\end{enumerate}
 
 \section{Methodology}
-\label{subsec:methodology}
+\label{sec:methodology}
 
-This chapter describes the experimental design, data sources, and analytical methods used to investigate how post-training techniques reshape the feature landscape of large language models. The methodology proceeds in five stages: first, activations are extracted from both the base and instruction-tuned variants of Gemma 2 2B on identical input sequences; second, pre-trained Sparse Autoencoders from the Gemma Scope suite decompose these activations into interpretable features; third, features are matched across models using decoder similarity and activation correlation; fourth, matched and unmatched features are labelled and categorised through automated interpretability; and fifth, selected features are causally verified through activation steering. Each stage is detailed below, with formal definitions, justifications, and explicit assumptions.
+This chapter describes the experimental design as it was actually implemented. It corrects the original draft on three points---model family (Gemma 3 1B, not Gemma 2 2B), analytical scope (single layer rather than all 26 layers), and the labelling and steering protocols---and presents only the parts of the pipeline that were executed end-to-end.
 
 \subsection{Experimental Overview and Research Design}
 \label{subsec:experimental-overview}
 
-The central research question asks how the feature landscape differs between the base version of a model and its post-trained snapshot. To answer this, the methodology compares interpretable features extracted from two versions of the same model architecture---one that has only undergone pre-training and one that has additionally been fine-tuned and aligned through instruction tuning and reinforcement learning from human feedback.
+The experiment is comparative and observational. Two publicly available checkpoints, \texttt{google/gemma-3-1b-pt} and \texttt{google/gemma-3-1b-it}, share architecture and pre-training and differ only in whether post-training was applied. Holding everything else constant, any systematic difference in their feature representations can therefore be attributed to post-training.
 
-The experimental design follows a comparative, observational structure. Rather than training models from scratch or performing controlled fine-tuning, this study leverages an existing pair of publicly available model checkpoints that differ only in whether post-training was applied. By holding architecture and pre-training constant, any systematic differences in feature representations can be attributed to the post-training process.
+The analysis is restricted to a single transformer layer: layer 13 of 26, at the residual stream. This is a deliberate scope reduction relative to the original methodology draft. Prior work consistently places much of the post-training-relevant change in mid-to-late layers \parencite{du_how_2025}, and concentrating compute on one layer makes the dual-LLM labelling and steering experiments tractable on a single GPU. Generalisation across layers is left as future work.
 
-The analysis operates at three levels of granularity. The macroscopic level examines how the overall feature landscape changes across all layers, quantifying what proportion of features are preserved, newly created, or lost. The mesoscopic level categorises features thematically---into groupings such as syntactic, semantic, safety-relevant, and formatting features---and examines how each category is affected by post-training. The microscopic level investigates individual features of interest through detailed case studies, verifying their causal role in model behaviour through activation steering experiments.
+The pipeline proceeds in five stages:
+\begin{enumerate}
+    \item activation collection on a shared FineWeb sample;
+    \item SAE encoding with Gemma Scope 2 SAEs, using separate dictionaries for PT and IT;
+    \item feature matching by decoder cosine similarity and activation correlation, followed by four-way classification;
+    \item targeted differential analysis on safety and instruction prompts plus dual-LLM consensus labelling;
+    \item causal verification by norm-calibrated activation steering.
+\end{enumerate}
 
-The experimental pipeline is illustrated across three figures. Figure~\ref{fig:data-activation-collection} shows the data and activation collection stage, where identical input sequences are processed by both model variants and decomposed into sparse features via their respective Gemma Scope SAEs. Figure~\ref{fig:feature-comparison} shows the feature comparison stage, where sparse feature vectors are matched across models and classified into four categories before undergoing automated labelling. Figure~\ref{fig:validation-results} shows the validation and results stage, where categorised features feed into quantitative metrics and causal verification experiments, converging into an assessment of the wrapper hypothesis.
+The three pipeline figures from the original draft remain conceptually valid once ``Gemma 2 2B'' is replaced by ``Gemma 3 1B'' and the analysis is understood as being fixed to layer 13.
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{Diagram 1 - Data & Activation Collection.png}
-    \caption{Data and activation collection pipeline. Identical input sequences from FineWeb are processed by both the base and instruction-tuned Gemma 2 2B models, producing residual stream activations that are decomposed into sparse feature vectors by their respective Gemma Scope SAEs.}
+    \caption{Data and activation collection pipeline. Identical FineWeb sequences are processed by both the PT and IT variants of Gemma 3 1B, and the residual stream at layer 13 is decomposed into sparse feature vectors by the corresponding Gemma Scope 2 SAEs.}
     \label{fig:data-activation-collection}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{Diagram 2 - Feature Comparison.png}
-    \caption{Feature comparison pipeline. Sparse feature vectors and decoder matrices from both models are fed into the feature matching procedure, which classifies features into four categories (preserved, modified, base-exclusive, IT-exclusive) before automated labelling and thematic categorisation.}
+    \caption{Feature comparison pipeline. Layer-13 sparse feature vectors and decoder matrices from both models are matched across PT and IT, then classified into preserved, modified, PT-exclusive, and IT-exclusive categories before targeted analysis and labelling.}
     \label{fig:feature-comparison}
 \end{figure}
 
 \begin{figure}[htbp]
     \centering
     \includegraphics[width=\textwidth]{Diagram 3 - Validation & Results.png}
-    \caption{Validation and results pipeline. Categorised features feed into quantitative metrics (preservation rates, new feature catalogue, safety feature analysis) and causal verification via activation steering, converging into an overall assessment of the wrapper hypothesis.}
+    \caption{Validation and results pipeline. Categorised features feed into threshold sensitivity analysis, targeted safety and instruction probing, and causal verification through activation steering, converging on an empirical test of the wrapper hypothesis.}
     \label{fig:validation-results}
 \end{figure}
 
-\subsection{Data Sources and Description}
-\label{subsec:data-sources}
+\subsection{Models and SAEs}
+\label{subsec:models-saes}
 
-This study relies on three primary data sources: the language models under comparison, the Sparse Autoencoders used to decompose their activations, and the text corpora used as inputs during analysis.
+\textbf{Models.} Gemma 3 1B is treated here as a dense decoder-only transformer with 26 layers and a hidden dimension of 1152. The base variant, \texttt{gemma-3-1b-pt}, is pre-trained only; the instruction-tuned variant, \texttt{gemma-3-1b-it}, shares the same backbone but has additionally undergone Google's standard post-training pipeline. Both models are loaded in \texttt{bfloat16}. Earlier tests with \texttt{float16} produced NaN activations at layer 13 due to overflow, which the larger dynamic range of \texttt{bfloat16} avoids.
 
-\subsubsection{Language Models: Gemma 2 2B}
-\label{subsubsec:language-models}
+\textbf{SAEs.} Both PT and IT models use the corresponding Gemma Scope 2 residual-stream SAEs at layer 13, with release strings \texttt{gemma-scope-2-1b-pt-res} and \texttt{gemma-scope-2-1b-it-res}, and SAE id \texttt{layer\_13\_width\_16k\_l0\_medium}. These are JumpReLU SAEs with a dictionary width of 16,384 features, approximately 14 times the model hidden dimension, trained independently on activations from each model variant \parencite{rajamanoharan_improving_2024, lieberum_gemma_2024}. That independence is necessary for comparison, but it also means that the same underlying concept can be decomposed into different dictionary elements in the two models, which is precisely why the matching procedure uses two complementary criteria.
 
-The models under investigation are the base (pre-trained) and instruction-tuned variants of Gemma 2 2B, developed and released by Google DeepMind \parencite{gemma_team_2024}. Gemma 2 2B is a dense transformer with 2.6 billion parameters, a hidden dimension of 2304, and 26 layers. The architecture follows a standard transformer decoder with grouped-query attention, rotary positional embeddings, and a vocabulary of 256,000 tokens. Both model variants are publicly available on HuggingFace under open licenses.
+On the FineWeb sample used here, the PT SAE has mean FVU 0.066, mean $L_0 \approx 61.4$, and 8,142 features active on more than 0.1\% of tokens. The IT SAE has mean FVU 0.124, mean $L_0 \approx 65.1$, and 4,828 features active on more than 0.1\% of tokens. The higher FVU and smaller pool of live features in the IT SAE is itself interpreted as a substantive result: post-training appears to narrow the effective feature inventory at this layer, concentrating activation mass on fewer dictionary elements.
 
-The base model (Gemma-2-2B) was trained on approximately 2 trillion tokens of primarily English web data, code, and mathematical content. It represents the output of the pre-training stage alone and produces text through next-token prediction without any explicit behavioural alignment.
+\subsection{Data and Activation Collection}
+\label{subsec:data-activation}
 
-The instruction-tuned model (Gemma-2-2B-IT) shares the same architecture and pre-training foundation but has additionally undergone supervised fine-tuning on curated instruction-response pairs followed by reinforcement learning from human feedback (RLHF). This process is designed to make the model follow instructions, produce helpful and harmless responses, and adopt a conversational format. The IT model's post-training details follow the procedures described in the Gemma 2 technical report \parencite{gemma_team_2024}.
+\textbf{Corpus.} A random sample of 5,000 sequences from FineWeb is drawn, each truncated to 256 tokens. Sequences shorter than 256 tokens are discarded rather than padded. This yields 1,275,000 valid activation positions once the first BOS token is dropped from each sequence. The sample size is reduced from the 50,000 sequences proposed in the original draft because the dual-LLM labelling and steering stages added compute requirements that were not part of the original scope, and threshold sensitivity analysis showed that the qualitative results stabilise well within a 5K-sequence sample.
 
-The choice of Gemma 2 2B is motivated by three considerations. First, the availability of both base and instruction-tuned variants with identical architecture enables controlled comparison. Second, Google DeepMind has released comprehensive pre-trained Sparse Autoencoders for both variants through the Gemma Scope project \parencite{lieberum_gemma_2024}, eliminating the need for SAE training and allowing the study to focus on the novel analysis contribution. Third, the 2B parameter scale is computationally tractable for systematic analysis across all layers while remaining large enough to exhibit the complex feature representations observed in prior interpretability work \parencite{templeton_scaling_2024}.
+\textbf{Tokenisation.} The Gemma 3 tokenizer is shared across PT and IT, so identical text produces identical token sequences in both models. Prompts are passed as raw text without applying the IT chat template, since doing so would introduce special tokens the base model has never seen and would confound the comparison.
 
-\subsubsection{Sparse Autoencoders: Gemma Scope}
-\label{subsubsec:sparse-autoencoders}
+\textbf{Activation extraction.} A forward hook on \texttt{model.model.layers[13]} captures the residual-stream output for every position in every sequence. Because the SAE is trained on float32 activations, hidden states are cast back from \texttt{bfloat16} to float32 before encoding. To stay within the VRAM budget, activations are moved to CPU after extraction and then streamed back to GPU in chunks of 64 tokens for SAE encoding, while running sums are accumulated incrementally rather than storing the full activation tensor.
 
-The Sparse Autoencoders used in this study are drawn from the Gemma Scope suite \parencite{lieberum_gemma_2024}, a comprehensive collection of open-source SAEs trained on Gemma 2 by Google DeepMind. Gemma Scope provides pre-trained JumpReLU SAEs \parencite{rajamanoharan_improving_2024} for every layer and sublayer of both the base and instruction-tuned Gemma 2 2B and 9B models.
+\subsection{Feature Matching and Classification}
+\label{subsec:feature-matching}
 
-For the primary analysis, SAEs with a dictionary width of 16,384 features (approximately $7\times$ the model's hidden dimension of 2304) are used across all 26 layers, targeting the residual stream activation site. This width was selected to balance feature granularity against analytical tractability: larger dictionaries (32K, 65K, or 131K features, also available in Gemma Scope) capture increasingly fine-grained feature splits but produce proportionally more features to match, label, and interpret. Where the 16K analysis reveals evidence of feature splitting---multiple similar features that appear to decompose a single concept---selected analyses are repeated at 32K to verify whether finer resolution changes the conclusions.
+\textbf{Decoder-direction similarity.} Both decoder matrices are $L_2$-normalised along the feature dimension. For each PT feature $i$, the cosine similarity to every IT decoder direction $j$ is computed in chunks of 1,024 features, and the highest-similarity IT counterpart is recorded. The same is done in the reverse direction because the matching is not assumed to be symmetric. The aggregate Mean Maximum Cosine Similarity values are 0.634 for PT$\rightarrow$IT and 0.626 for IT$\rightarrow$PT. These are moderate values and well below the level one would expect under strict feature preservation.
 
-All Gemma Scope SAEs for the 2B model were trained using the JumpReLU activation function on approximately 4 billion tokens of web text sampled from a distribution similar to Gemma 2's pre-training data. Each SAE was trained independently on activations from its respective model variant (base or IT), meaning the base-model SAEs and the IT-model SAEs have separate learned dictionaries. This independence is both a strength and a limitation: it avoids any architectural coupling between the two feature sets, but it also means that features representing the same underlying concept in different models may be learned as distinct dictionary elements, necessitating explicit feature matching (see Section~\ref{subsubsec:feature-matching}).
+\textbf{Activation correlation.} For each best-match pair, the Pearson correlation between the two features' per-sequence mean activation vectors of length 5,000 is computed. Per-sequence rather than per-token activations are used because storing full per-token vectors would exceed the available memory budget and because downstream labelling and targeted analysis also operate on per-sequence means. Mean activation correlation is 0.150, with median 0.006, indicating that the bulk of features show low cross-model agreement on firing pattern even when their geometric directions are similar.
 
-Key quality metrics reported by \textcite{lieberum_gemma_2024} for the 16K SAEs include a mean $L_0$ (average number of active features per token) in the range of 30--60 depending on the layer and sparsity configuration, and fraction of variance unexplained (FVU) values that indicate the SAEs capture the majority of activation variance while maintaining sparsity. The sparsity-fidelity trade-off for the selected SAE configurations is reported in the original Gemma Scope paper and is not re-evaluated here, as the focus of this study is on comparative feature analysis rather than SAE quality assessment.
+\textbf{Classification.} A feature is classified as \textit{preserved} when both criteria exceed their thresholds, \textit{modified} when exactly one does, \textit{PT-exclusive} when neither holds from the PT side, and \textit{IT-exclusive} when neither holds from the IT side. Only features active on at least 0.1\% of tokens enter the counts, so dead features are excluded. The primary thresholds adopted for downstream analysis are $\tau_d = 0.7$ and $\tau_a = 0.3$, yielding 241 preserved features (3.0\% of active PT), 4,017 modified (49.3\%), 3,884 PT-exclusive (47.7\%), and 1,899 IT-exclusive (39.3\% of active IT). Under the stricter literature-style thresholds $\tau_d = 0.8$ and $\tau_a = 0.7$, the preserved category collapses to only 34 features, which makes threshold choice a central methodological issue rather than a minor implementation detail.
 
-\subsubsection{Text Corpora}
-\label{subsubsec:text-corpora}
+\subsection{Threshold Sensitivity Analysis}
+\label{subsec:threshold-sensitivity}
 
-Two text datasets serve complementary roles in the analysis pipeline.
+To check whether the qualitative picture is robust, the four-way classification is recomputed on a $5 \times 5$ grid of threshold values:
+\[
+    \tau_d \in \{0.5, 0.6, 0.7, 0.8, 0.9\}, \qquad
+    \tau_a \in \{0.1, 0.2, 0.3, 0.5, 0.7\}.
+\]
+Across this entire grid, the modified category exceeds 30\% of active PT features in every setting and the preserved category remains small throughout. The wrapper-hypothesis-friendly reading---that most features have a recognisable counterpart but fire differently---is therefore not a threshold artefact.
 
-\textbf{FineWeb} \parencite{penedo_fineweb_2024} is a large-scale, deduplicated English web text corpus released by HuggingFace. It serves as the primary dataset for broad activation collection and feature-level comparison. FineWeb was selected because its distribution closely matches the pre-training data of both the Gemma 2 models and the Gemma Scope SAEs, ensuring that the SAEs operate within their intended distribution and that reconstruction quality remains high. From the full corpus, a random sample of 50,000 sequences is drawn, each truncated to 256 tokens, yielding approximately 12.8 million tokens of activation data. The same token sequences are processed by both the base and IT models to ensure that feature activations are directly comparable at each token position.
+\subsection{Targeted Analysis on Safety and Instruction Prompts}
+\label{subsec:targeted-analysis}
 
-\textbf{Instruction-Following Evaluation Set.} To specifically investigate features relevant to the behavioural differences between base and instruction-tuned models, a secondary evaluation set is constructed by sampling from existing instruction-following benchmarks. This set draws from Alpaca-Eval \parencite{li_alpacaeval_2023} for general instruction-following prompts, TruthfulQA \parencite{lin_truthfulqa_2022} for prompts probing factual accuracy and truthfulness, and a curated subset of safety-relevant prompts from publicly available alignment evaluation datasets. The purpose of this set is to probe feature behaviour in contexts where the two model variants are expected to diverge most---when presented with instructions, sensitive topics, or requests that the IT model has been specifically trained to handle differently from the base model. Approximately 2,000 prompts are included, categorised by type (general instruction, factual, safety-relevant, creative).
+To probe behaviourally relevant features, three labelled prompt sets are loaded:
+\begin{itemize}
+    \item JailbreakBench JBB-Behaviors, using 100 harmful and 100 benign prompts, for safety;
+    \item Stanford Alpaca, using 200 instructions, for instruction-following;
+    \item the TruthfulQA generation split, using 200 questions, as a complementary factual probe.
+\end{itemize}
 
-A known limitation of this two-dataset design is that the FineWeb corpus does not include conversational or instruction-formatted text, which is the domain where post-training effects are most pronounced. The instruction-following set compensates for this gap, but its smaller size limits the statistical power of comparisons drawn from it. This trade-off is discussed further in Section~\ref{subsec:assumptions-limitations}.
+Each prompt is tokenised, passed through both PT and IT, and its mean per-feature activation at layer 13, averaged over non-BOS tokens, is recorded. For each group-versus-baseline comparison, Welch's $t$-test identifies the features with the largest standardised mean difference between the two groups, separately in PT and IT. The top 20 features per group per model are then cross-referenced against the matching results and bucketed into ``IT-exclusive,'' ``Has PT match,'' or ``No clear match,'' giving a direct test of RQ2.
 
-\subsection{Data Processing and Activation Collection Pipeline}
-\label{subsec:data-processing}
+These results are persisted to \texttt{targeted\_analysis\_results.json} so that the steering stage can reuse the empirical mean activations for norm calibration.
 
-The activation collection pipeline extracts internal representations from both models in a controlled, reproducible manner, as illustrated in Figure~\ref{fig:data-activation-collection}. For each input sequence, the pipeline records the residual stream activations at each of the 26 layers, producing paired activation vectors for the base and IT models on identical inputs.
+A methodological note is important here. The original draft proposed contrasting overtly benign and overtly harmful prompts. Pilot runs showed that this gives weak diagnostic signal, because the IT model's most differentially active features often fire on lexical cues such as ``how to,'' ``create,'' or ``make'' rather than on semantic harm. Near-boundary, ambiguously framed prompts would likely provide a stronger test, and this is treated as a limitation rather than ignored.
 
-\subsubsection{Tokenization and Input Preparation}
-\label{subsubsec:tokenization}
+\subsection{Automated Feature Labelling}
+\label{subsec:feature-labelling}
 
-All input sequences are tokenized using Gemma 2's shared tokenizer (vocabulary size: 256,000). Because both models share the same tokenizer, the same input text produces identical token sequences for both models, ensuring token-level alignment of activations. Sequences from FineWeb are truncated to 256 tokens; sequences shorter than 256 tokens are discarded rather than padded, to avoid introducing padding-related artifacts into the activation distributions.
+For each feature category---preserved, modified, PT-exclusive, and IT-exclusive---50 features are sampled and labelled. For each selected feature, the 20 highest-activating sequences from the 5K-sequence FineWeb sample are collected, with activating tokens flagged using \texttt{>>>...<<<} markers. These examples are then sent in parallel to two LLMs.
 
-For the instruction-following evaluation set, prompts are formatted as raw text without applying any chat template or special tokens. This choice ensures that both models receive identical inputs---applying the IT model's chat template would introduce tokens that the base model has never seen, confounding the comparison. The consequence of this choice is that the IT model may not produce its best instruction-following behaviour, since it was fine-tuned to expect a specific prompt format. However, this study is concerned with internal feature representations rather than output quality, and the raw-format approach guarantees that any observed activation differences arise from learned representational changes rather than input formatting differences.
+Claude Haiku 4.5 is queried through a structured-output schema that requests a free-text description, a categorical label from the set \{\texttt{language\_syntax}, \texttt{knowledge\_semantics}, \texttt{instruction\_style}, \texttt{safety\_alignment}, \texttt{formatting}, \texttt{other}\}, and a confidence rating from 1 to 5. GPT-4.1-nano is queried with the same schema and prompt. Outputs are saved separately to \texttt{feature\_labels\_claude.json} and \texttt{feature\_labels\_openai.json}.
 
-\subsubsection{Activation Extraction}
-\label{subsubsec:activation-extraction}
+Inter-model agreement is computed per category and yields an overall rate of about 59.5\%. Agreement is highest for preserved features and degrades as features become more ambiguous, which is the expected pattern. The two annotators most often disagree on the boundary between \texttt{language\_syntax} and \texttt{instruction\_style}, suggesting that many instruction-following cues are realised through syntactic markers. A high-confidence consensus subset is then constructed by retaining only features for which both models report confidence at least 4. This consensus list is the subset used for downstream steering selection.
 
-For each input sequence and each of the 26 transformer layers, the residual stream activation vector $\mathbf{h}_l \in \mathbb{R}^{2304}$ is recorded after the layer's output has been added to the residual stream. This site captures the cumulative representation at each layer, incorporating the contributions of all preceding attention and MLP computations.
+Claude Haiku is preferred over a larger Anthropic model because the labelling task is essentially short-context pattern recognition, and pilot validation did not reveal a quality difference large enough to justify the cost increase.
 
-Activations are extracted using TransformerLens \parencite{nanda_transformerlens_2022}, which provides hooks into the model's forward pass at each layer. Both models are run in inference mode with no gradient computation. All activations are stored in 32-bit floating point precision to match the precision used during Gemma Scope SAE training.
-
-\subsubsection{SAE Feature Decomposition}
-\label{subsubsec:sae-decomposition}
-
-Each activation vector $\mathbf{h}_l$ is passed through the corresponding Gemma Scope SAE for that layer and model variant. The SAE decomposes the activation into a sparse feature vector $\mathbf{f}_l \in \mathbb{R}^{16384}$, where the vast majority of entries are zero and the non-zero entries represent the activation strength of each detected feature.
-
-Formally, the JumpReLU SAE computes:
-\begin{equation}
-    \mathbf{f}_l = \operatorname{JumpReLU}_\theta\!\left( W_{\text{enc}} \left(\mathbf{h}_l - \mathbf{b}_{\text{pre}}\right) + \mathbf{b}_{\text{enc}} \right)
-    \label{eq:sae-encode}
-\end{equation}
-where $W_{\text{enc}} \in \mathbb{R}^{16384 \times 2304}$ is the encoder weight matrix, $\mathbf{b}_{\text{pre}} \in \mathbb{R}^{2304}$ is a pre-encoder bias (typically set to the mean activation), $\mathbf{b}_{\text{enc}} \in \mathbb{R}^{16384}$ is the encoder bias, and $\operatorname{JumpReLU}_\theta$ is a discontinuous activation function defined as:
-\begin{equation}
-    \operatorname{JumpReLU}_\theta(z_i) = z_i \cdot \mathbb{1}[z_i > \theta_i]
-    \label{eq:jumprelu}
-\end{equation}
-Here, $\theta_i$ is a learned threshold for each feature $i$. Unlike the standard ReLU, which activates for any positive input, JumpReLU only activates when the pre-activation exceeds a learned threshold, producing exactly zero output otherwise. This yields sparser representations without the shrinkage artifacts associated with $L_1$-penalised ReLU SAEs \parencite{rajamanoharan_improving_2024}.
-
-The reconstructed activation is then:
-\begin{equation}
-    \hat{\mathbf{h}}_l = W_{\text{dec}}\, \mathbf{f}_l + \mathbf{b}_{\text{pre}}
-    \label{eq:sae-decode}
-\end{equation}
-where $W_{\text{dec}} \in \mathbb{R}^{2304 \times 16384}$ is the decoder weight matrix. Each column $\mathbf{d}_i$ of $W_{\text{dec}}$ represents the direction in activation space associated with feature $i$, and is normalised to unit norm during training. These decoder directions are central to the feature matching procedure described in Section~\ref{subsubsec:feature-matching}.
-
-The output of this stage is, for each input token, a pair of sparse feature vectors---one from the base model's SAE and one from the IT model's SAE---along with the corresponding decoder direction matrices. These constitute the raw data for all subsequent analyses.
-
-\subsection{Exploratory Analysis of Raw Activations}
-\label{subsec:exploratory-analysis}
-
-Before applying the SAE-based feature comparison framework, a preliminary analysis characterises how the raw activation spaces of the two models relate to each other. This exploratory stage serves two purposes: it establishes baseline expectations for the magnitude and distribution of representational differences, and it motivates the need for the more fine-grained, feature-level analysis that follows.
-
-\subsubsection{Activation Norm Comparison}
-\label{subsubsec:activation-norm}
-
-For each layer $l$, the mean activation norm $\mathbb{E}\!\left[\|\mathbf{h}_l\|\right]$ is computed across all tokens in the FineWeb sample, separately for each model. Systematic differences in activation norms across layers may indicate that post-training amplifies or dampens representations at certain depths. Prior work has observed that instruction-tuned models sometimes exhibit higher activation norms in later layers, consistent with stronger behavioural signals being injected during post-training \parencite{du_how_2025}.
-
-\subsubsection{Representational Similarity}
-\label{subsubsec:representational-similarity}
-
-To quantify how similar the overall activation geometries are between the two models, Centered Kernel Alignment (CKA) is computed layer-by-layer. CKA \parencite{kornblith_similarity_2019} measures the similarity between two sets of representations by comparing their pairwise similarity structures, and is invariant to orthogonal transformations and isotropic scaling. Given activation matrices $X \in \mathbb{R}^{n \times d}$ and $Y \in \mathbb{R}^{n \times d}$ (rows are tokens, columns are dimensions) from the base and IT models respectively, linear CKA is computed as:
-\begin{equation}
-    \text{CKA}(X, Y) = \frac{\|Y^\top X\|_F^2}{\|X^\top X\|_F \cdot \|Y^\top Y\|_F}
-    \label{eq:cka}
-\end{equation}
-where $\|\cdot\|_F$ denotes the Frobenius norm. CKA values range from 0 (completely dissimilar representations) to 1 (identical up to linear transformation). A layer-by-layer CKA profile reveals where in the model the two variants diverge most, guiding the selection of layers for detailed microscopic analysis.
-
-This exploratory analysis is expected to show high CKA values in early layers (where representations are primarily determined by pre-training and capture low-level lexical and positional information) and progressively lower values in later layers (where post-training has the most opportunity to reshape representations for behavioural alignment). However, CKA operates on the aggregate activation space and cannot identify which specific features changed or how---motivating the SAE-based decomposition that follows.
-
-\subsection{Sparse Autoencoder Framework}
-\label{subsec:sae-framework}
-
-This section formally defines the Sparse Autoencoder framework and the theoretical assumptions that justify its use as an interpretability tool for comparing feature representations across model variants.
-
-\subsubsection{Theoretical Motivation}
-\label{subsubsec:theoretical-motivation}
-
-The application of Sparse Autoencoders to this problem rests on two foundational hypotheses from the mechanistic interpretability literature.
-
-The \textbf{linear representation hypothesis} posits that neural networks represent meaningful concepts as directions in their activation space \parencite{park_linear_2024, mikolov_efficient_2013}. Under this view, concepts such as ``formal language,'' ``Python code,'' or ``safety-relevant content'' correspond to specific linear directions along which activations vary. If this hypothesis holds, then the feature representations extracted by SAEs---which are precisely linear directions in activation space---capture genuine conceptual structure rather than artifacts of the decomposition method.
-
-The \textbf{superposition hypothesis} \parencite{elhage_toy_2022} proposes that neural networks represent far more features than they have dimensions, by encoding features as nearly-orthogonal directions that overlap in the activation space. This explains why individual neurons are often polysemantic (responding to multiple unrelated concepts): each neuron participates in the representation of many superimposed features. SAEs address this by projecting activations into a much higher-dimensional space (16,384 features from 2,304 dimensions) where each basis direction ideally corresponds to a single interpretable concept---a property known as monosemanticity \parencite{bricken_monosemanticity_2023}.
-
-Together, these hypotheses provide the theoretical basis for comparing features across models. If both the base and IT models represent concepts as linear directions, and if SAEs can recover these directions, then comparing SAE features across models amounts to comparing the conceptual vocabularies that each model has learned to use. Features present in both models represent shared conceptual structure inherited from pre-training; features present only in the IT model may represent concepts introduced or made salient by post-training; and features present only in the base model may represent concepts that post-training suppresses or reorganises.
-
-\subsubsection{Assumptions and Caveats}
-\label{subsubsec:assumptions-caveats}
-
-Several assumptions underlie this framework, and their potential violations should be acknowledged.
-
-First, the linear representation hypothesis, while supported by substantial empirical evidence \parencite{mikolov_efficient_2013, park_linear_2024}, is not guaranteed to hold for all features. Some concepts may be represented non-linearly, in which case SAEs would fail to capture them. This study cannot detect features that violate linearity.
-
-Second, SAE reconstruction is imperfect. The fraction of activation variance left unexplained by the SAE (FVU) means that some information in the original activations is lost. Features that contribute to the unexplained variance are invisible to this analysis. The use of Gemma Scope SAEs with documented quality metrics \parencite{lieberum_gemma_2024} mitigates but does not eliminate this concern.
-
-Third, the independence of the two SAE dictionaries means that the absence of a matching feature across models does not necessarily mean the underlying concept is absent---it may simply be decomposed differently. The multi-criteria matching approach described in Section~\ref{subsubsec:feature-matching} is designed to reduce false negatives, but some genuine correspondences will inevitably be missed.
-
-Fourth, the analysis is limited to the residual stream activation site. Features represented primarily in attention patterns or MLP intermediate activations may not be captured. This scope limitation is a deliberate trade-off for tractability, and extending the analysis to other sites is noted as future work.
-
-\subsection{Feature Comparison Methodology}
-\label{subsec:feature-comparison}
-
-This section describes the core analytical contribution of the thesis: a systematic pipeline for identifying which features are preserved, created, or modified between the base and instruction-tuned models. The pipeline, illustrated in Figure~\ref{fig:feature-comparison}, proceeds from global similarity metrics through feature-level matching to thematic categorisation.
-
-\subsubsection{Macroscopic Analysis: Feature Landscape Overview}
-\label{subsubsec:macroscopic-analysis}
-
-The first level of analysis characterises the overall similarity of the feature dictionaries across models. For each layer $l$, the Mean Maximum Cosine Similarity (MMCS) between the base and IT model SAE dictionaries is computed. Let $D^{\text{base}}_l \in \mathbb{R}^{2304 \times 16384}$ and $D^{\text{IT}}_l \in \mathbb{R}^{2304 \times 16384}$ denote the decoder weight matrices of the base and IT SAEs at layer $l$, with columns $\mathbf{d}^{\text{base}}_i$ and $\mathbf{d}^{\text{IT}}_j$ representing the decoder directions for each feature. The MMCS from base to IT is:
-\begin{equation}
-    \text{MMCS}(D^{\text{base}}_l, D^{\text{IT}}_l) = \frac{1}{N} \sum_{i=1}^{N} \max_{j}\, \cos(\mathbf{d}^{\text{base}}_i,\, \mathbf{d}^{\text{IT}}_j)
-    \label{eq:mmcs}
-\end{equation}
-where $N = 16{,}384$ is the number of features and $\cos(\cdot,\cdot)$ denotes cosine similarity. A high MMCS indicates that most features in the base dictionary have a close geometric counterpart in the IT dictionary. The MMCS is computed in both directions (base$\to$IT and IT$\to$base), as the mapping need not be symmetric.
-
-Additionally, the distribution of maximum cosine similarities is examined---not just its mean. A bimodal distribution (with a cluster near 1.0 and a cluster near 0.5) would suggest that some features are well-preserved while others are substantially altered, whereas a unimodal distribution near 0.8 would suggest gradual, uniform drift.
-
-The MMCS profile across layers is expected to mirror the CKA profile from Section~\ref{subsubsec:representational-similarity}: higher similarity in early layers, decreasing toward later layers where post-training effects accumulate.
-
-\subsubsection{Feature Matching}
-\label{subsubsec:feature-matching}
-
-Individual features are matched across models using two complementary criteria.
-
-\textbf{Decoder direction similarity.} For each feature $i$ in the base model SAE, the cosine similarity between its decoder direction $\mathbf{d}^{\text{base}}_i$ and every decoder direction $\mathbf{d}^{\text{IT}}_j$ in the IT model SAE is computed. The highest-similarity IT feature is identified as the candidate match. A match is accepted if the cosine similarity exceeds a threshold $\tau_d$. The threshold $\tau_d = 0.8$ is adopted as the primary criterion, following conventions in the SAE comparison literature, with sensitivity analyses conducted at $\tau_d \in \{0.7, 0.85, 0.9\}$ to assess robustness.
-
-\textbf{Activation pattern correlation.} As a complementary criterion, the Pearson correlation between the activation patterns of candidate feature pairs is computed over the shared FineWeb evaluation set. Let $\mathbf{a}^{\text{base}}_i \in \mathbb{R}^{T}$ and $\mathbf{a}^{\text{IT}}_j \in \mathbb{R}^{T}$ be the vectors of activation values for features $i$ and $j$ across $T$ tokens. The activation correlation is:
-\begin{equation}
-    r_{ij} = \operatorname{corr}(\mathbf{a}^{\text{base}}_i,\, \mathbf{a}^{\text{IT}}_j)
-    \label{eq:activation-correlation}
-\end{equation}
-A match is considered high-confidence if both $\cos(\mathbf{d}^{\text{base}}_i, \mathbf{d}^{\text{IT}}_j) > \tau_d$ and $r_{ij} > \tau_a$, where $\tau_a = 0.7$ is adopted as the activation correlation threshold. Features matching on decoder similarity alone (geometric match but different activation patterns) or activation correlation alone (similar firing patterns but different geometric directions) are flagged for closer inspection, as these may indicate features that have been functionally preserved but geometrically reorganised, or vice versa.
-
-\subsubsection{Feature Classification}
-\label{subsubsec:feature-classification}
-
-Based on the matching results, features are classified into four categories:
-
-\textbf{Preserved features} have a high-confidence match (both criteria exceeded) between the base and IT models. These represent conceptual structure inherited from pre-training that post-training leaves intact.
-
-\textbf{Modified features} have a partial match: they exceed one matching criterion but not both, or their matched counterpart shows a significantly different activation magnitude distribution. These may represent concepts that post-training has adjusted---for instance, a feature detecting ``requests for harmful content'' that exists in both models but activates more strongly in the IT model, suggesting post-training amplified its salience.
-
-\textbf{Base-exclusive features} have no match exceeding either threshold in the IT model's dictionary. These represent either concepts that post-training has suppressed or features that have been reorganised beyond recognition.
-
-\textbf{IT-exclusive features} have no match in the base model's dictionary. These are candidates for newly created features---concepts that the post-training process introduced.
-
-The proportion of features in each category, computed per layer and aggregated across the model, constitutes the primary quantitative result of the macroscopic analysis.
-
-\subsubsection{Automated Interpretability Pipeline}
-\label{subsubsec:automated-interpretability}
-
-To understand what the matched and unmatched features represent, an automated interpretability pipeline generates and validates natural language descriptions for selected features.
-
-\textbf{Feature selection.} Not all 16,384 features per layer are labelled. Features are selected for labelling based on their relevance to the research questions: all IT-exclusive features with non-trivial activation frequency (firing on at least 0.1\% of tokens), all base-exclusive features with non-trivial activation frequency, a random sample of preserved features for baseline characterisation, and modified features with the largest activation magnitude differences between models.
-
-\textbf{Description generation.} For each selected feature, the top 20 text sequences from the FineWeb sample that produce the highest activation values are collected, along with 10 randomly sampled sequences where the feature does not activate. These examples are presented to a language model (Claude, Anthropic) with the following prompt structure: the activated tokens are highlighted within each sequence, the non-activating examples are provided as contrast, and the model is asked to produce a concise description of the pattern that distinguishes activating from non-activating contexts.
-
-\textbf{Description validation.} Generated descriptions are validated using two scoring methods adapted from the automated interpretability literature \parencite{bills_language_2023, templeton_scaling_2024}.
-
-\emph{Detection scoring} presents a separate LLM instance with the feature description and a mixed set of activating and non-activating sequences, then asks it to classify which sequences would activate the feature. The detection score is the proportion of correctly classified sequences, where scores above 0.7 indicate that the description captures the feature's behaviour with reasonable accuracy.
-
-\emph{Fuzzing scoring} presents the description and an activating sequence, then asks the LLM to predict which specific tokens within the sequence trigger the feature. This token-level validation is a stricter test that identifies descriptions that are directionally correct but insufficiently precise.
-
-Features whose descriptions fail validation (detection score below 0.5) are flagged as poorly understood and excluded from thematic categorisation, though they are retained in quantitative counts.
-
-\textbf{Thematic categorisation.} Validated feature descriptions are manually grouped into thematic categories: language and syntax (grammatical structures, punctuation patterns, formatting), knowledge and semantics (factual concepts, domain-specific content, named entities), instruction and style (response formatting, conversational conventions, hedging language), and safety and alignment (refusal patterns, sensitivity to harmful content, bias-related activations). This categorisation enables the analysis to answer not just how many features change, but what kinds of features are most affected by post-training.
-
-\subsubsection{Methodological Extension: Crosscoders for Joint Feature Extraction}
-\label{subsubsec:crosscoders}
-
-The feature matching approach described above relies on independently trained SAEs whose dictionaries are compared post-hoc. While practical and well-grounded, this approach has a fundamental limitation: two SAEs trained independently on different activation distributions may decompose the same underlying concept into different dictionary elements, or may split a single concept differently across multiple features. This means that some genuine feature correspondences will be missed by the matching procedure, and the counts of ``exclusive'' features may overestimate the true number of features unique to each model.
-
-An alternative methodology that addresses this limitation is the crosscoder framework \parencite{lindsey_crosscoders_2024}. A crosscoder is a variant of the Sparse Autoencoder that jointly encodes activations from both the base and instruction-tuned models using a single shared dictionary. Concretely, a crosscoder receives the concatenated activation vectors $[\mathbf{h}^{\text{base}}_l;\, \mathbf{h}^{\text{IT}}_l] \in \mathbb{R}^{2 \times 2304}$ from the same input processed by both models, and produces a single sparse feature vector $\mathbf{f}_l \in \mathbb{R}^{K}$. Each feature then decodes separately to each model's activation space through distinct decoder columns $\mathbf{d}^{\text{base}}_i$ and $\mathbf{d}^{\text{IT}}_i$. A feature is naturally classified as shared if both decoder columns have substantial norm, and as model-exclusive if one decoder column dominates.
-
-This design eliminates the need for post-hoc feature matching entirely, because both models are explained through the same dictionary from the outset. Recent work has further refined this approach through Dedicated Feature Crosscoders (DFCs), which explicitly partition the dictionary into shared and model-specific feature slots, encouraging cleaner separation and reducing the risk of misattribution \parencite{dfc_2025}. Additionally, research on crosscoder training dynamics has shown that the choice of sparsity penalty matters: standard $L_1$ regularisation can cause shared features to be incorrectly attributed as model-exclusive, whereas BatchTopK loss substantially mitigates this issue by enforcing sparsity at the batch level rather than per-example \parencite{minder_crosscoder_2025}.
-
-This study begins with the separate-SAE approach for three reasons. First, the Gemma Scope SAEs are pre-trained, validated, and publicly available, allowing the analysis to proceed without the computational cost and hyperparameter sensitivity of training crosscoders from scratch. Second, using established, independently validated SAEs provides a conservative and transparent baseline---the matching criteria and thresholds are explicit and can be scrutinised. Third, the separate-SAE approach is more directly comparable to prior work on SAE-based model analysis \parencite{lieberum_gemma_2024, templeton_scaling_2024}, facilitating interpretation of results in the context of existing literature.
-
-Should the separate-SAE analysis reveal a substantial proportion of ambiguously matched features---features that meet one matching criterion but not the other, suggesting they may have been reorganised rather than truly created or lost---a crosscoder-based analysis on selected layers would be pursued as a complementary method. Training crosscoders on 3--4 representative layers (early, middle, and late) using the Language-Model-SAEs framework \parencite{ge_lmsaes_2024} with BatchTopK loss would allow direct comparison of results between the two methodological approaches. Convergent findings across both approaches would strengthen confidence in the conclusions; divergent findings would highlight the sensitivity of results to methodological choices, which itself would be a valuable contribution.
-
-\subsection{Causal Verification via Feature Steering}
+\subsection{Causal Verification via Activation Steering}
 \label{subsec:causal-verification}
 
-The feature comparison methodology identifies correlational differences between models---features that activate differently. As shown in Figure~\ref{fig:validation-results}, to establish that these differences are causally meaningful, selected features are subjected to activation steering experiments that test whether manipulating a feature's activation actually changes model behaviour in the predicted direction. The results of these experiments, combined with the quantitative metrics from the feature classification stage, converge into an overall assessment of the wrapper hypothesis.
+Three steering cases test the causal role of selected features:
+\begin{itemize}
+    \item \textbf{Case A: IT-exclusive features steered in the base model.} If post-training installs genuinely new safety- or instruction-relevant features, then injecting an IT-exclusive feature into the PT model should shift outputs in the direction predicted by its label. The selected candidates are features 241, 222, 2006, and 446.
+    \item \textbf{Case B: PT-exclusive features steered in the IT model.} If post-training suppresses pre-existing capabilities rather than removing them, then re-injecting a PT-exclusive feature into the IT model should re-surface the corresponding behaviour. The selected candidates are features 329 and 75.
+    \item \textbf{Case C: dose-response on modified features.} Two features classified as modified, 222 and 446, are steered across a finer multiplier grid in the IT model to characterise the relationship between intervention magnitude and behavioural change.
+\end{itemize}
 
-\subsubsection{Activation Steering Method}
-\label{subsubsec:activation-steering}
+\textbf{Steering implementation.} A forward hook on layer 13 adds $\alpha \cdot \mathbf{d}_i$ to the residual stream during generation, where $\mathbf{d}_i$ is the SAE decoder column for feature $i$. Decoder directions are taken at their learned SAE scale rather than unit-normalised, because unit normalisation would discard empirically learned magnitude information and make $\alpha$ less interpretable across features.
 
-For a given feature $i$ with decoder direction $\mathbf{d}_i$ and a target activation magnitude $\alpha$, the steering intervention modifies the model's residual stream activation at layer $l$ during a forward pass:
-\begin{equation}
-    \mathbf{h}'_l = \mathbf{h}_l + \alpha \cdot \mathbf{d}_i
-    \label{eq:steering}
-\end{equation}
-This adds the feature's direction to the activation, simulating an increase in the feature's activation strength (for positive $\alpha$) or a suppression (for negative $\alpha$). The modified activation propagates through the remaining layers, and the resulting change in model output (measured by generation quality, token probabilities, or behavioural classification) indicates the feature's causal role.
+\textbf{Norm calibration of $\alpha$.} Pilot runs at a fixed $\alpha = 50$ produced almost no behavioural change because the residual-stream norms at layer 13 of Gemma 3 1B are large. Instead, $\alpha$ is parameterised relative to the empirical mean activation of the target feature, taken from the targeted analysis:
+\[
+    \alpha = m \times \text{mean\_act},
+\]
+with multipliers $m \in \{-5, -3, -1, 0, 1, 3, 5, 10\}$ for Cases A and B, and $m \in \{-10, -5, -3, -1, 0, 1, 3, 5, 10, 20\}$ for Case C. This makes the intervention interpretable as a multiple of the feature's natural firing strength.
 
-\subsubsection{Case Study Selection}
-\label{subsubsec:case-study-selection}
+\textbf{Evaluation.} Two evaluation metrics are used:
+\begin{enumerate}
+    \item KL divergence between the next-token distributions of steered and unsteered generations at the final prompt position;
+    \item qualitative text-change classification, where steered and unsteered 60-token generations are compared as strings and tagged either \texttt{CHANGED} or \texttt{same}.
+\end{enumerate}
+Each feature is tested across nine prompts spanning instruction, safety, and neutral settings for Cases A and B, and across three prompts for Case C.
 
-Approximately 5--10 features are selected for causal verification based on their relevance to the research questions:
+\subsection{Implementation Notes}
+\label{subsec:implementation-notes}
 
-Features that are IT-exclusive and whose descriptions suggest instruction-following or safety-related behaviour are tested by steering them in the base model. If activating an IT-exclusive feature in the base model causes it to produce more instruction-following or safety-aware outputs, this provides evidence that the feature genuinely encodes the relevant behaviour and was introduced by post-training.
-
-Features that are base-exclusive and whose descriptions suggest capabilities or knowledge that may have been suppressed are tested by steering them in the IT model. If re-activating a suppressed feature changes the IT model's behaviour, this suggests that the underlying capability persists but is actively inhibited by post-training---consistent with the ``wrapper hypothesis'' \parencite{jain_mechanistically_2024}.
-
-Modified features whose activation patterns shifted between models are tested at various steering magnitudes to characterise the relationship between feature strength and behavioural change.
-
-\subsubsection{Evaluation of Steering Effects}
-\label{subsubsec:evaluation-steering}
-
-Steering effects are evaluated both quantitatively and qualitatively. Quantitatively, the KL divergence between the steered and unsteered output distributions is computed to measure the magnitude of the behavioural change. Qualitatively, generated text samples under steering are examined to assess whether the behavioural change aligns with the feature's description---for instance, whether steering a ``formal language'' feature actually makes outputs more formal.
+All experiments are conducted in Python in a Jupyter notebook on a single GPU with roughly 79 GB VRAM. Models are loaded in \texttt{bfloat16}; SAE encoding runs in float32 to match Gemma Scope training precision. The random seed is fixed at 42 for sampling and prompt ordering. SAELens is used for SAE loading and steering hooks, the Anthropic Python SDK for structured Claude outputs, and OpenAI's official client for GPT-4.1-nano labelling. Intermediate artefacts---classification masks, labels from both annotators, the consensus list, the targeted analysis JSON, and the steering results JSON---are all written to disk so that later stages can be rerun independently.
 
 \subsection{Assumptions, Limitations, and Scope}
 \label{subsec:assumptions-limitations}
 
-The methodology rests on several assumptions and is subject to limitations that constrain the interpretation of results.
-
-\textbf{Assumptions.} The linear representation hypothesis is assumed to hold sufficiently for the features of interest. The Gemma Scope SAEs are assumed to provide adequate reconstruction quality for the analysis to be meaningful. The matching thresholds ($\tau_d = 0.8$, $\tau_a = 0.7$) are assumed to appropriately distinguish genuine feature correspondences from coincidental similarity. Each of these assumptions is tested indirectly: the linear representation hypothesis through the coherence of automated feature labels, SAE quality through reported FVU values, and matching thresholds through sensitivity analysis at alternative values.
-
-\textbf{Limitations.} The study examines a single model family (Gemma 2) at a single scale (2B parameters). Results may not generalise to other architectures (e.g., mixture-of-experts models) or larger scales, where both feature representations and the effects of post-training may differ qualitatively. The analysis is restricted to residual stream activations and does not examine attention patterns or MLP internals. The use of independently trained SAEs introduces unavoidable noise in feature matching---some genuine correspondences will be missed and some spurious matches will be accepted. The instruction-following evaluation set, while curated to cover diverse prompt types, cannot exhaustively represent the full distribution of inputs where post-training effects manifest. Finally, the study compares only the final pre-trained and post-trained checkpoints and cannot distinguish the individual contributions of SFT and RLHF within the post-training pipeline, as intermediate checkpoints are not publicly available.
-
-\textbf{Scope.} The results are valid for the specific model pair examined (Gemma 2 2B base and IT) and the specific SAE configuration used (Gemma Scope 16K JumpReLU on residual stream). Claims about ``post-training effects on feature representations'' should be understood as conditional on these choices. The discussion chapter addresses the extent to which findings may generalise based on convergent evidence from prior work on related models and methods.
-
-\textbf{Sensitivity.} The primary results that could be invalidated include: the feature preservation rate (sensitive to matching thresholds---tested at multiple values), the identification of IT-exclusive features (sensitive to SAE dictionary completeness---could reflect features the base SAE failed to learn rather than genuinely absent features), and the causal verification results (sensitive to steering magnitude and the specific prompts used---tested across a range of magnitudes and prompt types).
-
-\subsection{Reproducibility}
-\label{subsec:reproducibility}
-
-All experiments are conducted in Python 3.11 using the following software stack:
+The methodology rests on the linear representation hypothesis and on the adequacy of Gemma Scope 2 SAEs as a feature extractor. Both are tested only indirectly: the former through the coherence of automated labels and the latter through reported FVU values. The main limitations are as follows.
 
 \begin{itemize}
-    \item \textbf{TransformerLens} \parencite{nanda_transformerlens_2022} for model loading and activation extraction
-    \item \textbf{SAELens} \parencite{bloom_saelens_2024} for loading Gemma Scope SAEs, computing feature activations, and performing activation steering
-    \item \textbf{PyTorch 2.x} as the underlying deep learning framework
-    \item \textbf{NumPy} and \textbf{SciPy} for numerical computation and statistical tests
-    \item \textbf{Anthropic API} (Claude) for automated feature labelling and validation
+    \item \textbf{Single layer, single model pair, single scale.} Findings are valid for layer 13 of Gemma 3 1B with the 16K-width Gemma Scope 2 SAEs and need not generalise to other layers, larger Gemma variants, or other architectures.
+    \item \textbf{Reduced sample size.} The study uses 5K FineWeb sequences rather than the 50K proposed in the original draft. Threshold sensitivity is robust within this sample, but rare-feature statistics are necessarily weaker.
+    \item \textbf{Per-sequence rather than per-token correlation.} Activation correlation is computed on per-sequence mean activations to fit in memory, which can under-count features that match locally but not globally.
+    \item \textbf{Raw decoder norms in steering.} Steering uses raw, not unit-normalised, decoder directions. This preserves learned SAE scale but requires the multiplier-by-mean-activation calibration to keep interventions interpretable.
+    \item \textbf{KL at a single position.} Variable generation lengths under steering make a full-generation KL window ill-defined, so KL is reported only at the final prompt token.
+    \item \textbf{Prompt selection.} The targeted prompts are categorical contrasts rather than near-boundary probes. A stronger safety diagnosis would likely come from more ambiguous prompts.
+    \item \textbf{Crosscoders are out of scope.} A PT-vs-IT crosscoder for Gemma 3 would eliminate post-hoc matching entirely, but currently published Gemma Scope crosscoders are cross-layer rather than cross-model, so that extension is left for future work.
 \end{itemize}
 
-All experiments are executed on Google Colab Pro, using NVIDIA A100 40GB GPU instances with up to 52GB of system RAM. As GPU allocation in Colab Pro may vary across sessions, the specific hardware configuration is logged at the start of each experiment run. Random seeds are fixed at 42 for all stochastic operations, including data sampling and the ordering of evaluation prompts. The FineWeb and instruction-following evaluation samples, along with all analysis code, feature activation caches, feature labels, and matching results, are made available in a public GitHub repository.
+\section{Technical Content and Key Results}
+\label{sec:results}
 
-The full pipeline---from activation extraction through feature matching, labelling, and causal verification---is implemented as a series of reproducible scripts with configuration files specifying all hyperparameters. An informed reader should be able to reproduce the complete analysis by cloning the repository, downloading the publicly available models and SAEs, and executing the pipeline scripts in sequence.
+\subsection{Macroscopic Picture (RQ1)}
+\label{subsec:rq1-results}
+
+At the strict literature thresholds $\tau_d = 0.8$ and $\tau_a = 0.7$, only 34 of the 8,142 active PT features at layer 13 are preserved, approximately 0.4\%. A further 2,436 features, or 29.9\%, are modified; 5,672, or 69.7\%, are PT-exclusive; and 3,407 of the 4,828 active IT features, or 70.6\%, are IT-exclusive. Mean MMCS is 0.634 for PT$\rightarrow$IT, well below the level one would expect under strict feature reuse.
+
+At the moderate thresholds used as the primary setting, $\tau_d = 0.7$ and $\tau_a = 0.3$, the shape changes but the message does not: 241 features are preserved (3.0\%), 4,017 are modified (49.3\%), 3,884 are PT-exclusive (47.7\%), and 1,899 are IT-exclusive (39.3\%). The modified category is now the largest single bucket, which is exactly the wrapper-hypothesis prediction: most features have a recognisable cross-model counterpart, but their firing patterns differ.
+
+The threshold sensitivity sweep strengthens that reading. The modified category exceeds 30\% of active PT features across the entire $5 \times 5$ grid, while the preserved category never rises above 12\%. The qualitative dominance of modified over preserved is therefore not a threshold artefact.
+
+\subsection{Labelling and Cross-Model Consensus}
+\label{subsec:labelling-results}
+
+Fifty features per category are labelled by both Claude Haiku 4.5 and GPT-4.1-nano. Inter-model agreement on the categorical label is 74\% for preserved features, 54\% for modified, 44\% for PT-exclusive, and 48\% for IT-exclusive. This is a clean monotonic pattern: the more ambiguous the matching status, the harder the semantic labelling task.
+
+Claude's labels for IT-exclusive features lean strongly toward \texttt{language\_syntax} and \texttt{formatting}, with very few in \texttt{instruction\_style} and none in \texttt{safety\_alignment}. GPT-4.1-nano yields a flatter distribution over the same sample. Neither model spontaneously identifies a meaningful number of IT-exclusive safety features in the labelling sample. That is itself a non-trivial result, because a strong creation-based interpretation of post-training would predict the opposite.
+
+The high-confidence consensus list, defined by confidence at least 4 from both models, contains 14 IT-exclusive features, 13 PT-exclusive, 22 modified, and 37 preserved. This consensus subset is what feeds the targeted analysis and steering stages.
+
+\subsection{Targeted Differential Analysis (RQ2)}
+\label{subsec:rq2-results}
+
+Welch's $t$-test on JailbreakBench harmful-versus-benign prompts surfaces 20 features per model. When the IT-side top-20 safety features are looked up in the matching results, 5 have a clear PT match, 3 are IT-exclusive, and 12 fall into a no-clear-match zone where only one matching criterion is satisfied. Repeating the same exercise on Alpaca instruction prompts yields 7 with a PT match, 6 IT-exclusive, and 7 ambiguous.
+
+This is the central empirical result of the thesis. If post-training had installed new safety- and instruction-relevant features as discrete entities, the top differential IT features should overwhelmingly have been IT-exclusive. They are not. The largest bucket is the ambiguous or modified zone, and clear PT matches outnumber clear IT-exclusives in both probes. On this evidence, post-training is re-weighting features the base model already had, which is precisely the wrapper prediction.
+
+\subsection{Causal Verification via Steering (RQ3)}
+\label{subsec:rq3-results}
+
+\textbf{Case A: IT-exclusive features steered in PT.} Feature 241, with mean activation 173.3 and labelled as a wrongdoing or harmful-activity detector, produces graded behavioural changes when injected into the base model. At multiplier $m = +3$, corresponding to $\alpha \approx +520$, KL divergence ranges from 0.03 to 0.06 and 5 of 9 generations differ visibly from baseline. At $m = +10$, with $\alpha \approx +1733$, KL reaches 0.4 to 0.96 and all 9 generations differ. Importantly, the qualitative effect is not ``the base model started refusing harmful prompts'' but rather ``the base model became more verbose, more first-person, and more prone to topic drift.'' Features 222, 446, and 2006 show smaller but qualitatively similar effects. The feature is therefore causal, but its label appears to describe a firing condition rather than a full behavioural target.
+
+\textbf{Case B: PT-exclusive features steered in IT.} Features 329 and 75 produce monotonic dose-response curves under both positive and negative steering, with KL values from approximately 0 at $m = \pm 1$ to about 0.03 at $m = \pm 10$. Steering is therefore causal on output distributions even for features that the matching pipeline labelled as PT-exclusive, which suggests that the IT model remains sensitive to these directions even though its own SAE dictionary did not learn dedicated counterparts for them.
+
+\textbf{Case C: modified features in IT.} Features 222 and 446 produce clean monotonic dose-response curves inside the IT model itself: KL is around $10^{-3}$ at $m = \pm 1$, around $10^{-2}$ at $m = \pm 5$, and between 0.46 and 0.84 at $m = +20$. All three generations differ at $m = +10$ and $m = +20$ for both features. This is the clearest evidence for the modulation reading: the feature direction is shared across PT and IT, but its natural firing strength is what post-training tunes.
+
+Taken together, the steering results support a graded version of the wrapper hypothesis. Post-training does not appear to create discrete new safety circuits at layer 13 of Gemma 3 1B. Instead, it adjusts the firing patterns and effective strengths of features that already exist as directions in the base model's residual stream.
+
+\section{Limitations and Robustness}
+\label{sec:limitations-robustness}
+
+The threshold sensitivity sweep covers the main free parameter in the matching procedure and shows that the qualitative result, modified greater than preserved throughout, is robust. The dual-LLM labelling protocol guards against single-annotator bias, and the consensus filter discards ambiguous cases. Norm-calibrated steering uses empirical mean activations rather than fixed $\alpha$ values, controlling for large cross-feature variation in natural firing magnitudes.
+
+The main remaining sources of uncertainty are exactly those already declared in the methodology: single layer, single model pair, reduced sample size, per-sequence rather than per-token correlation, raw decoder norms in steering, single-position KL, and overtly categorical targeted prompts. None of these would be expected to reverse the central conclusion on present evidence. The modified category is too dominant, and the targeted analysis too one-sided, for a small methodological tweak to flip the result. But each limitation constrains how broadly the conclusion can be claimed to hold.
+
+The most consequential limitation is the single-layer scope. \textcite{du_how_2025} report that post-training effects vary substantially across depth, and a more complete picture would therefore require the same analysis to be repeated at an early layer, a mid layer, and a late layer. That is the clearest next step.
+
+\section{Conclusions, Implications, and Application to the Real World}
+\label{sec:conclusions}
+
+The empirical answer this thesis arrives at is straightforward: at layer 13 of Gemma 3 1B, instruction tuning predominantly reorganises features the base model already had rather than installing new ones. Three independent lines of evidence converge on that conclusion. First, the matching results show that under every threshold setting in the $5 \times 5$ grid the modified category vastly outnumbers the preserved category, meaning that most features have a cross-model counterpart but a different firing pattern. Second, when IT-side features are surfaced by safety and instruction probes, the largest bucket is ``matched to a PT feature'' rather than ``IT-exclusive.'' Third, steering both IT-exclusive and modified features produces graded behavioural change, but that change reads as modulation rather than the introduction of a new behavioural primitive.
+
+\textbf{Implications for alignment research.} If this picture generalises, then interventions that aim to ``remove safety features'' or ``find the refusal feature'' are looking for the wrong kind of object. The relevant unit is not a discrete post-training-introduced feature but a modulation pattern over pre-existing features. That reframes a substantial portion of the alignment-by-interpretation programme: red-teaming should assume capabilities are never deleted, only down-weighted; defences should target activation distributions rather than feature presence; and crosscoder-style joint dictionaries are likely to be the right tool for the job because they make modulation explicit by construction.
+
+\textbf{Practical takeaway for practitioners.} The pipeline released alongside this thesis can be rerun on future paired base/IT releases whenever Gemma-Scope-style SAEs become available. The dual-LLM consensus protocol generalises naturally to other feature-labelling tasks and is inexpensive enough for student-budget experimentation. The norm-calibrated steering convention, $\alpha = m \times \text{mean\_activation}$, yields interventions that are more interpretable than fixed raw-vector magnitudes and may therefore be useful beyond this particular thesis.
+
+\textbf{Future work.} Three extensions are immediate: repeat the analysis at early and late layers to recover the depth profile; train a PT-vs-IT crosscoder for Gemma 3 1B to validate the matching results against a method that does not need post-hoc matching; and rerun the targeted analysis on near-boundary safety prompts to test whether the apparent absence of dedicated safety features survives a stronger probe.
+
+On the evidence presented here, the wrapper hypothesis is not merely a convenient metaphor. It is a testable empirical claim about how post-training reshapes language models, and at layer 13 of Gemma 3 1B it survives the test.

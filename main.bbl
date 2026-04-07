@@ -19,152 +19,6 @@
 
 \refsection{0}
   \datalist[entry]{nyt/global//global/global/global}
-    \entry{dfc_2025}{misc}{}{}
-      \name{author}{1}{}{%
-        {{hash=7079c72c21415131774625ba1d64f4b0}{%
-           family={{Anonymous}},
-           familyi={A\bibinitperiod}}}%
-      }
-      \strng{namehash}{7079c72c21415131774625ba1d64f4b0}
-      \strng{fullhash}{7079c72c21415131774625ba1d64f4b0}
-      \strng{fullhashraw}{7079c72c21415131774625ba1d64f4b0}
-      \strng{bibnamehash}{7079c72c21415131774625ba1d64f4b0}
-      \strng{authorbibnamehash}{7079c72c21415131774625ba1d64f4b0}
-      \strng{authornamehash}{7079c72c21415131774625ba1d64f4b0}
-      \strng{authorfullhash}{7079c72c21415131774625ba1d64f4b0}
-      \strng{authorfullhashraw}{7079c72c21415131774625ba1d64f4b0}
-      \field{sortinit}{A}
-      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{note}{OpenReview preprint}
-      \field{title}{Dedicated Feature Crosscoders}
-      \field{year}{2025}
-      \verb{urlraw}
-      \verb https://openreview.net/forum?id=dedicated-feature-crosscoders
-      \endverb
-      \verb{url}
-      \verb https://openreview.net/forum?id=dedicated-feature-crosscoders
-      \endverb
-    \endentry
-    \entry{bills_language_2023}{misc}{}{}
-      \name{author}{10}{}{%
-        {{hash=e154ac06368e85193b3f4aa0d4104740}{%
-           family={Bills},
-           familyi={B\bibinitperiod},
-           given={Steven},
-           giveni={S\bibinitperiod}}}%
-        {{hash=cc96f98580654440b94d08637b463079}{%
-           family={Cammarata},
-           familyi={C\bibinitperiod},
-           given={Nick},
-           giveni={N\bibinitperiod}}}%
-        {{hash=ed8317f943e9bf26437d30968c6d85a8}{%
-           family={Mossing},
-           familyi={M\bibinitperiod},
-           given={Dan},
-           giveni={D\bibinitperiod}}}%
-        {{hash=1bf4f96b4acc79d7101b019794876746}{%
-           family={Tillman},
-           familyi={T\bibinitperiod},
-           given={Henk},
-           giveni={H\bibinitperiod}}}%
-        {{hash=5507d34dbd17d768ebf4620f85594a2b}{%
-           family={Gao},
-           familyi={G\bibinitperiod},
-           given={Leo},
-           giveni={L\bibinitperiod}}}%
-        {{hash=e5e3e996c0a95da7e97cae269822bbef}{%
-           family={Goh},
-           familyi={G\bibinitperiod},
-           given={Gabriel},
-           giveni={G\bibinitperiod}}}%
-        {{hash=8d569d1d5b8b5a7836017a98b430f959}{%
-           family={Sutskever},
-           familyi={S\bibinitperiod},
-           given={Ilya},
-           giveni={I\bibinitperiod}}}%
-        {{hash=cc754f0620be1073909db48780f1da4d}{%
-           family={Leike},
-           familyi={L\bibinitperiod},
-           given={Jan},
-           giveni={J\bibinitperiod}}}%
-        {{hash=154c21dba0a601ad2f9ec03612c6d5e0}{%
-           family={Wu},
-           familyi={W\bibinitperiod},
-           given={Jeff},
-           giveni={J\bibinitperiod}}}%
-        {{hash=7173c96904fbae796aea158ab03efeb7}{%
-           family={Saunders},
-           familyi={S\bibinitperiod},
-           given={William},
-           giveni={W\bibinitperiod}}}%
-      }
-      \strng{namehash}{e34690c1589cfc03f49970e9c78af1bd}
-      \strng{fullhash}{1bf308e7396e8204e4b70bba6291ff48}
-      \strng{fullhashraw}{1bf308e7396e8204e4b70bba6291ff48}
-      \strng{bibnamehash}{e34690c1589cfc03f49970e9c78af1bd}
-      \strng{authorbibnamehash}{e34690c1589cfc03f49970e9c78af1bd}
-      \strng{authornamehash}{e34690c1589cfc03f49970e9c78af1bd}
-      \strng{authorfullhash}{1bf308e7396e8204e4b70bba6291ff48}
-      \strng{authorfullhashraw}{1bf308e7396e8204e4b70bba6291ff48}
-      \field{sortinit}{B}
-      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Language models can explain neurons in language models}
-      \field{year}{2023}
-      \verb{urlraw}
-      \verb https://openaipublic.blob.core.windows.net/neuron-explainer/paper/index.html
-      \endverb
-      \verb{url}
-      \verb https://openaipublic.blob.core.windows.net/neuron-explainer/paper/index.html
-      \endverb
-    \endentry
-    \entry{bloom_saelens_2024}{misc}{}{}
-      \name{author}{4}{}{%
-        {{hash=8bffc8ca92e4f0cd665c6a61ca7bca32}{%
-           family={Bloom},
-           familyi={B\bibinitperiod},
-           given={Joseph},
-           giveni={J\bibinitperiod}}}%
-        {{hash=2bea3bb85f278ca404bf4e68abe9ea17}{%
-           family={Chanin},
-           familyi={C\bibinitperiod},
-           given={David},
-           giveni={D\bibinitperiod}}}%
-        {{hash=bfbd60bb9ee021a9daa3e7887e22164c}{%
-           family={Karvonen},
-           familyi={K\bibinitperiod},
-           given={Adam},
-           giveni={A\bibinitperiod}}}%
-        {{hash=0b10cbaf1de96675a2b3f015afc4e114}{%
-           family={Rajamanoharan},
-           familyi={R\bibinitperiod},
-           given={Senthooran},
-           giveni={S\bibinitperiod}}}%
-      }
-      \strng{namehash}{8d794a86409acf5e30d771f91eee560d}
-      \strng{fullhash}{5edbc565a90c7bc0547f88e95aaf65e8}
-      \strng{fullhashraw}{5edbc565a90c7bc0547f88e95aaf65e8}
-      \strng{bibnamehash}{8d794a86409acf5e30d771f91eee560d}
-      \strng{authorbibnamehash}{8d794a86409acf5e30d771f91eee560d}
-      \strng{authornamehash}{8d794a86409acf5e30d771f91eee560d}
-      \strng{authorfullhash}{5edbc565a90c7bc0547f88e95aaf65e8}
-      \strng{authorfullhashraw}{5edbc565a90c7bc0547f88e95aaf65e8}
-      \field{sortinit}{B}
-      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{{SAELens}: {SAE} Training and Analysis Library}
-      \field{year}{2024}
-      \verb{urlraw}
-      \verb https://github.com/jbloomAus/SAELens
-      \endverb
-      \verb{url}
-      \verb https://github.com/jbloomAus/SAELens
-      \endverb
-    \endentry
     \entry{bricken_monosemanticity_2023}{misc}{}{}
       \name{author}{25}{}{%
         {{hash=7f04698374508ac3b699ef1bf04a25ca}{%
@@ -526,121 +380,246 @@
       \endverb
       \keyw{Computer Science - Machine Learning}
     \endentry
-    \entry{ge_lmsaes_2024}{misc}{}{}
-      \true{moreauthor}
-      \true{morelabelname}
-      \name{author}{1}{}{%
-        {{hash=7220fdf7dace14057f657a03c054c761}{%
-           family={Ge},
-           familyi={G\bibinitperiod},
-           given={Xuyang},
-           giveni={X\bibinitperiod}}}%
-      }
-      \strng{namehash}{0a5bac327f82de8a51e8590f4b33ce95}
-      \strng{fullhash}{0a5bac327f82de8a51e8590f4b33ce95}
-      \strng{fullhashraw}{0a5bac327f82de8a51e8590f4b33ce95}
-      \strng{bibnamehash}{0a5bac327f82de8a51e8590f4b33ce95}
-      \strng{authorbibnamehash}{0a5bac327f82de8a51e8590f4b33ce95}
-      \strng{authornamehash}{0a5bac327f82de8a51e8590f4b33ce95}
-      \strng{authorfullhash}{0a5bac327f82de8a51e8590f4b33ce95}
-      \strng{authorfullhashraw}{0a5bac327f82de8a51e8590f4b33ce95}
-      \field{sortinit}{G}
-      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{Language-Model-{SAEs}: A Framework for Training and Evaluating Sparse Autoencoders}
-      \field{year}{2024}
-      \verb{urlraw}
-      \verb https://github.com/OpenMOSS/Language-Model-SAEs
-      \endverb
-      \verb{url}
-      \verb https://github.com/OpenMOSS/Language-Model-SAEs
-      \endverb
-    \endentry
-    \entry{gemma_team_2024}{misc}{}{}
-      \true{moreauthor}
-      \true{morelabelname}
-      \name{author}{10}{}{%
-        {{hash=351c00969359c04c1e107ff4bdd80d9e}{%
-           family={{Gemma Team}},
-           familyi={G\bibinitperiod}}}%
-        {{hash=c51f839408897e08718d236c95314cec}{%
-           family={Riviere},
-           familyi={R\bibinitperiod},
-           given={Morgane},
-           giveni={M\bibinitperiod}}}%
-        {{hash=59bdad1e3012c3dc6712f0a4aab70022}{%
-           family={Pathak},
-           familyi={P\bibinitperiod},
-           given={Shreya},
-           giveni={S\bibinitperiod}}}%
-        {{hash=5f74380239222f802f01e3121fd03450}{%
-           family={Sessa},
-           familyi={S\bibinitperiod},
-           given={Pier\bibnamedelima Giuseppe},
-           giveni={P\bibinitperiod\bibinitdelim G\bibinitperiod}}}%
-        {{hash=386573d316ce52455cf7b344ab739bf1}{%
-           family={Hardin},
+    \entry{hubinger_sleeper_2024}{misc}{}{}
+      \name{author}{39}{}{%
+        {{hash=39c80427926d1225fcd504443ae06661}{%
+           family={Hubinger},
            familyi={H\bibinitperiod},
-           given={Cassidy},
+           given={Evan},
+           giveni={E\bibinitperiod}}}%
+        {{hash=b9b679eec7bd902ffeab061da66a7307}{%
+           family={Denison},
+           familyi={D\bibinitperiod},
+           given={Carson},
            giveni={C\bibinitperiod}}}%
-        {{hash=7341c72c27e12a41f380b94dc70fc957}{%
-           family={Bhupatiraju},
-           familyi={B\bibinitperiod},
-           given={Surya},
-           giveni={S\bibinitperiod}}}%
-        {{hash=c85ab3e34b08628b25b92d18c93c4560}{%
-           family={Hussenot},
-           familyi={H\bibinitperiod},
-           given={Léonard},
-           giveni={L\bibinitperiod}}}%
-        {{hash=249b63db1d4d33d1e4b35f82a34b271c}{%
-           family={Mesnard},
+        {{hash=8047c11994292e3e2cc358db8ee1f0ee}{%
+           family={Mu},
            familyi={M\bibinitperiod},
-           given={Thomas},
+           given={Jesse},
+           giveni={J\bibinitperiod}}}%
+        {{hash=108d8f226d4a0f07663b14d84869d9ea}{%
+           family={Lambert},
+           familyi={L\bibinitperiod},
+           given={Mike},
+           giveni={M\bibinitperiod}}}%
+        {{hash=f80811b5e1dd2bd44d10c61bece6c20f}{%
+           family={Tong},
+           familyi={T\bibinitperiod},
+           given={Meg},
+           giveni={M\bibinitperiod}}}%
+        {{hash=47d9d7ef4e4a6f6a5f58ffdd4e07dcca}{%
+           family={{MacDiarmid}},
+           familyi={M\bibinitperiod},
+           given={Monte},
+           giveni={M\bibinitperiod}}}%
+        {{hash=bd7ae123bfe2a360986c5a2af88c76ec}{%
+           family={Lanham},
+           familyi={L\bibinitperiod},
+           given={Tamera},
            giveni={T\bibinitperiod}}}%
-        {{hash=4b01bc2ebef2b134ce8110e0431af923}{%
-           family={Shahriari},
-           familyi={S\bibinitperiod},
-           given={Bobak},
-           giveni={B\bibinitperiod}}}%
-        {{hash=d5373f6d3ed5ffd45cd3289f89b5b079}{%
-           family={Ramé},
-           familyi={R\bibinitperiod},
-           given={Alexandre},
+        {{hash=18becbb5ea500211a8219e94dd0a975c}{%
+           family={Ziegler},
+           familyi={Z\bibinitperiod},
+           given={Daniel\bibnamedelima M.},
+           giveni={D\bibinitperiod\bibinitdelim M\bibinitperiod}}}%
+        {{hash=f0a2f359945a6b544acc0d2f119adb9c}{%
+           family={Maxwell},
+           familyi={M\bibinitperiod},
+           given={Tim},
+           giveni={T\bibinitperiod}}}%
+        {{hash=2acfa56da9a4454a1dcb35c3f6bcd7ee}{%
+           family={Cheng},
+           familyi={C\bibinitperiod},
+           given={Newton},
+           giveni={N\bibinitperiod}}}%
+        {{hash=9e635bbfed4ce26bfc9e300638b09fdc}{%
+           family={Jermyn},
+           familyi={J\bibinitperiod},
+           given={Adam},
            giveni={A\bibinitperiod}}}%
+        {{hash=1e84eff933be9f4887bf369cf181bf12}{%
+           family={Askell},
+           familyi={A\bibinitperiod},
+           given={Amanda},
+           giveni={A\bibinitperiod}}}%
+        {{hash=40b15fe30062ca250351deb77989ad19}{%
+           family={Radhakrishnan},
+           familyi={R\bibinitperiod},
+           given={Ansh},
+           giveni={A\bibinitperiod}}}%
+        {{hash=a82f53bf4352103417347a9672d2d469}{%
+           family={Anil},
+           familyi={A\bibinitperiod},
+           given={Cem},
+           giveni={C\bibinitperiod}}}%
+        {{hash=834f50f5d5a332c21effd10f07daf79e}{%
+           family={Duvenaud},
+           familyi={D\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=0149c487dd40eb94cedd34313c20da77}{%
+           family={Ganguli},
+           familyi={G\bibinitperiod},
+           given={Deep},
+           giveni={D\bibinitperiod}}}%
+        {{hash=5150e2c7e4a45438a012c62b93de862b}{%
+           family={Barez},
+           familyi={B\bibinitperiod},
+           given={Fazl},
+           giveni={F\bibinitperiod}}}%
+        {{hash=1480c861b1a73e1d1de1b227e985b179}{%
+           family={Clark},
+           familyi={C\bibinitperiod},
+           given={Jack},
+           giveni={J\bibinitperiod}}}%
+        {{hash=5a51e2df8c9693c1274b429fada63fd6}{%
+           family={Ndousse},
+           familyi={N\bibinitperiod},
+           given={Kamal},
+           giveni={K\bibinitperiod}}}%
+        {{hash=e8d39e76c516f189702f9c05f34aafb4}{%
+           family={Sachan},
+           familyi={S\bibinitperiod},
+           given={Kshitij},
+           giveni={K\bibinitperiod}}}%
+        {{hash=ae00073a67d4b264c542ca7f6788d39e}{%
+           family={Sellitto},
+           familyi={S\bibinitperiod},
+           given={Michael},
+           giveni={M\bibinitperiod}}}%
+        {{hash=49d116ec3ed86188a20d9d789823167a}{%
+           family={Sharma},
+           familyi={S\bibinitperiod},
+           given={Mrinank},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0ce3f71595cd1b7dc6a8c02e16adeb45}{%
+           family={{DasSarma}},
+           familyi={D\bibinitperiod},
+           given={Nova},
+           giveni={N\bibinitperiod}}}%
+        {{hash=7bfa5101481b4cfcddf46d2915b6ad49}{%
+           family={Grosse},
+           familyi={G\bibinitperiod},
+           given={Roger},
+           giveni={R\bibinitperiod}}}%
+        {{hash=6cc94a80c21f9c5b346a6f1a21e75095}{%
+           family={Kravec},
+           familyi={K\bibinitperiod},
+           given={Shauna},
+           giveni={S\bibinitperiod}}}%
+        {{hash=9bf1729ae263e793ab902ed7fe6678da}{%
+           family={Bai},
+           familyi={B\bibinitperiod},
+           given={Yuntao},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=96a5a55c1bfd4a28611b02b43f7f1b00}{%
+           family={Witten},
+           familyi={W\bibinitperiod},
+           given={Zachary},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=e3f183630adea0365412600e188df1cb}{%
+           family={Favaro},
+           familyi={F\bibinitperiod},
+           given={Marina},
+           giveni={M\bibinitperiod}}}%
+        {{hash=c673eaa5669c71e3f1a1c019ad138989}{%
+           family={Brauner},
+           familyi={B\bibinitperiod},
+           given={Jan},
+           giveni={J\bibinitperiod}}}%
+        {{hash=4fc6cbe621e2008171c6a5e6cb56d758}{%
+           family={Karnofsky},
+           familyi={K\bibinitperiod},
+           given={Holden},
+           giveni={H\bibinitperiod}}}%
+        {{hash=cffdbdf7d0beb981d8bb8ea28506a4b2}{%
+           family={Christiano},
+           familyi={C\bibinitperiod},
+           given={Paul},
+           giveni={P\bibinitperiod}}}%
+        {{hash=fc3587de57b6b9868eab5cb9c8efc3fb}{%
+           family={Bowman},
+           familyi={B\bibinitperiod},
+           given={Samuel\bibnamedelima R.},
+           giveni={S\bibinitperiod\bibinitdelim R\bibinitperiod}}}%
+        {{hash=1e5d27c2a4b90d4d7a2f74ce1cc61e52}{%
+           family={Graham},
+           familyi={G\bibinitperiod},
+           given={Logan},
+           giveni={L\bibinitperiod}}}%
+        {{hash=9e85370e215d552f72c95a2b63a37802}{%
+           family={Kaplan},
+           familyi={K\bibinitperiod},
+           given={Jared},
+           giveni={J\bibinitperiod}}}%
+        {{hash=f956cfff5f91902bb7611d217dee7fe3}{%
+           family={Mindermann},
+           familyi={M\bibinitperiod},
+           given={Sören},
+           giveni={S\bibinitperiod}}}%
+        {{hash=971e8ecd2b0e20613eb1a2d618015bba}{%
+           family={Greenblatt},
+           familyi={G\bibinitperiod},
+           given={Ryan},
+           giveni={R\bibinitperiod}}}%
+        {{hash=156453364dfa7e6dcb43302882a89311}{%
+           family={Shlegeris},
+           familyi={S\bibinitperiod},
+           given={Buck},
+           giveni={B\bibinitperiod}}}%
+        {{hash=145ba94765ef92b3094332c3fa573d26}{%
+           family={Schiefer},
+           familyi={S\bibinitperiod},
+           given={Nicholas},
+           giveni={N\bibinitperiod}}}%
+        {{hash=79978685fd7b37606022b06c0f6419a1}{%
+           family={Perez},
+           familyi={P\bibinitperiod},
+           given={Ethan},
+           giveni={E\bibinitperiod}}}%
       }
       \list{publisher}{1}{%
         {arXiv}%
       }
-      \strng{namehash}{4e671547a13554fd96313835d3961bf4}
-      \strng{fullhash}{3a4299c4ee75ae26a8711783b4762020}
-      \strng{fullhashraw}{3a4299c4ee75ae26a8711783b4762020}
-      \strng{bibnamehash}{4e671547a13554fd96313835d3961bf4}
-      \strng{authorbibnamehash}{4e671547a13554fd96313835d3961bf4}
-      \strng{authornamehash}{4e671547a13554fd96313835d3961bf4}
-      \strng{authorfullhash}{3a4299c4ee75ae26a8711783b4762020}
-      \strng{authorfullhashraw}{3a4299c4ee75ae26a8711783b4762020}
-      \field{sortinit}{G}
-      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \strng{namehash}{fd017335aff4ff548b9fe125dcf4ec3b}
+      \strng{fullhash}{86a6a2fe487f6ae4271713197548bf2d}
+      \strng{fullhashraw}{86a6a2fe487f6ae4271713197548bf2d}
+      \strng{bibnamehash}{fd017335aff4ff548b9fe125dcf4ec3b}
+      \strng{authorbibnamehash}{fd017335aff4ff548b9fe125dcf4ec3b}
+      \strng{authornamehash}{fd017335aff4ff548b9fe125dcf4ec3b}
+      \strng{authorfullhash}{86a6a2fe487f6ae4271713197548bf2d}
+      \strng{authorfullhashraw}{86a6a2fe487f6ae4271713197548bf2d}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
       \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{Humans are capable of strategically deceptive behavior: behaving helpfully in most situations, but then behaving very differently in order to pursue alternative objectives when given the opportunity. If an {AI} system learned such a deceptive strategy, could we detect it and remove it using current state-of-the-art safety training techniques? To study this question, we construct proof-of-concept examples of deceptive behavior in large language models ({LLMs}). For example, we train models that write secure code when the prompt states that the year is 2023, but insert exploitable code when the stated year is 2024. We find that such backdoor behavior can be made persistent, so that it is not removed by standard safety training techniques, including supervised fine-tuning, reinforcement learning, and adversarial training (eliciting unsafe behavior and then training to remove it). The backdoor behavior is most persistent in the largest models and in models trained to produce chain-of-thought reasoning about deceiving the training process, with the persistence remaining even when the chain-of-thought is distilled away. Furthermore, rather than removing backdoors, we find that adversarial training can teach models to better recognize their backdoor triggers, effectively hiding the unsafe behavior. Our results suggest that, once a model exhibits deceptive behavior, standard techniques could fail to remove such deception and create a false impression of safety.}
+      \field{day}{17}
       \field{eprinttype}{arxiv}
-      \field{number}{{arXiv}:2408.00118}
-      \field{title}{Gemma 2: Improving Open Language Models at a Practical Size}
+      \field{month}{1}
+      \field{number}{{arXiv}:2401.05566}
+      \field{shorttitle}{Sleeper Agents}
+      \field{title}{Sleeper Agents: Training Deceptive {LLMs} that Persist Through Safety Training}
+      \field{urlyear}{2026}
       \field{year}{2024}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
       \verb{doi}
-      \verb 10.48550/arXiv.2408.00118
+      \verb 10.48550/arXiv.2401.05566
       \endverb
       \verb{eprint}
-      \verb 2408.00118 [cs]
+      \verb 2401.05566 [cs]
+      \endverb
+      \verb{file}
+      \verb Preprint PDF:/Users/albertopuliga/Zotero/storage/CAJTRX6I/Hubinger et al. - 2024 - Sleeper Agents Training Deceptive LLMs that Persist Through Safety Training.pdf:application/pdf;Snapshot:/Users/albertopuliga/Zotero/storage/P7TWFCL2/2401.html:text/html
       \endverb
       \verb{urlraw}
-      \verb http://arxiv.org/abs/2408.00118
+      \verb http://arxiv.org/abs/2401.05566
       \endverb
       \verb{url}
-      \verb http://arxiv.org/abs/2408.00118
+      \verb http://arxiv.org/abs/2401.05566
       \endverb
+      \keyw{Computer Science - Machine Learning,Computer Science - Computation and Language,Computer Science - Artificial Intelligence,Computer Science - Cryptography and Security,Computer Science - Software Engineering}
     \endentry
     \entry{jain_mechanistically_2024}{misc}{}{}
       \name{author}{8}{}{%
@@ -727,134 +706,126 @@
       \endverb
       \keyw{Computer Science - Machine Learning}
     \endentry
-    \entry{kornblith_similarity_2019}{misc}{}{}
-      \name{author}{4}{}{%
-        {{hash=7fc0edf04cce351dda404579ede3d0d1}{%
-           family={Kornblith},
+    \entry{karvonen_saebench_2025}{misc}{}{}
+      \name{author}{15}{}{%
+        {{hash=bfbd60bb9ee021a9daa3e7887e22164c}{%
+           family={Karvonen},
            familyi={K\bibinitperiod},
-           given={Simon},
-           giveni={S\bibinitperiod}}}%
-        {{hash=e34c5aa67281924804d54d88e58ca38a}{%
-           family={Norouzi},
-           familyi={N\bibinitperiod},
-           given={Mohammad},
-           giveni={M\bibinitperiod}}}%
-        {{hash=d09ea8631bf43468107b5ef02c5195aa}{%
-           family={Lee},
+           given={Adam},
+           giveni={A\bibinitperiod}}}%
+        {{hash=4b876a384fc4df712a737d153a1a9977}{%
+           family={Rager},
+           familyi={R\bibinitperiod},
+           given={Can},
+           giveni={C\bibinitperiod}}}%
+        {{hash=59769443e43030d13bd5839cede97005}{%
+           family={Lin},
            familyi={L\bibinitperiod},
-           given={Honglak},
-           giveni={H\bibinitperiod}}}%
-        {{hash=9a8750ccdb2a4cf14d2655face1ce016}{%
-           family={Hinton},
-           familyi={H\bibinitperiod},
-           given={Geoffrey},
-           giveni={G\bibinitperiod}}}%
+           given={Johnny},
+           giveni={J\bibinitperiod}}}%
+        {{hash=423194b5cba9ee34352c2934e019bfb3}{%
+           family={Tigges},
+           familyi={T\bibinitperiod},
+           given={Curt},
+           giveni={C\bibinitperiod}}}%
+        {{hash=8bffc8ca92e4f0cd665c6a61ca7bca32}{%
+           family={Bloom},
+           familyi={B\bibinitperiod},
+           given={Joseph},
+           giveni={J\bibinitperiod}}}%
+        {{hash=2bea3bb85f278ca404bf4e68abe9ea17}{%
+           family={Chanin},
+           familyi={C\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+        {{hash=8d9c9b7b279055fc04c5c93eaaeb15a7}{%
+           family={Lau},
+           familyi={L\bibinitperiod},
+           given={Yeu-Tong},
+           giveni={Y\bibinithyphendelim T\bibinitperiod}}}%
+        {{hash=5aab7135bc3996e8a68a6642dcde8df5}{%
+           family={Farrell},
+           familyi={F\bibinitperiod},
+           given={Eoin},
+           giveni={E\bibinitperiod}}}%
+        {{hash=590d23df8c75b4b06dbb5da72bffd6a2}{%
+           family={{McDougall}},
+           familyi={M\bibinitperiod},
+           given={Callum},
+           giveni={C\bibinitperiod}}}%
+        {{hash=ef31ecbe10b3743471777810e95f0b54}{%
+           family={Ayonrinde},
+           familyi={A\bibinitperiod},
+           given={Kola},
+           giveni={K\bibinitperiod}}}%
+        {{hash=391f222387153ae902a73f67473fd881}{%
+           family={Till},
+           familyi={T\bibinitperiod},
+           given={Demian},
+           giveni={D\bibinitperiod}}}%
+        {{hash=a48ce30d74ab2880f56063c099dc8038}{%
+           family={Wearden},
+           familyi={W\bibinitperiod},
+           given={Matthew},
+           giveni={M\bibinitperiod}}}%
+        {{hash=182052283b19e3d0eb67af9d8078787d}{%
+           family={Conmy},
+           familyi={C\bibinitperiod},
+           given={Arthur},
+           giveni={A\bibinitperiod}}}%
+        {{hash=62984cf21be8bfef9892685bb0dd4066}{%
+           family={Marks},
+           familyi={M\bibinitperiod},
+           given={Samuel},
+           giveni={S\bibinitperiod}}}%
+        {{hash=d2f8bae99d9538a95287ac272f977fc4}{%
+           family={Nanda},
+           familyi={N\bibinitperiod},
+           given={Neel},
+           giveni={N\bibinitperiod}}}%
       }
       \list{publisher}{1}{%
         {arXiv}%
       }
-      \strng{namehash}{85d441f32944674f6dd87a3cae8f2d38}
-      \strng{fullhash}{91ab27d387c86b37d5cad66ed3c2dfa3}
-      \strng{fullhashraw}{91ab27d387c86b37d5cad66ed3c2dfa3}
-      \strng{bibnamehash}{85d441f32944674f6dd87a3cae8f2d38}
-      \strng{authorbibnamehash}{85d441f32944674f6dd87a3cae8f2d38}
-      \strng{authornamehash}{85d441f32944674f6dd87a3cae8f2d38}
-      \strng{authorfullhash}{91ab27d387c86b37d5cad66ed3c2dfa3}
-      \strng{authorfullhashraw}{91ab27d387c86b37d5cad66ed3c2dfa3}
+      \strng{namehash}{c12a4e353b44fe46a13826e5f16aae12}
+      \strng{fullhash}{3b26abb75b07525893e4bcb94f993b59}
+      \strng{fullhashraw}{3b26abb75b07525893e4bcb94f993b59}
+      \strng{bibnamehash}{c12a4e353b44fe46a13826e5f16aae12}
+      \strng{authorbibnamehash}{c12a4e353b44fe46a13826e5f16aae12}
+      \strng{authornamehash}{c12a4e353b44fe46a13826e5f16aae12}
+      \strng{authorfullhash}{3b26abb75b07525893e4bcb94f993b59}
+      \strng{authorfullhashraw}{3b26abb75b07525893e4bcb94f993b59}
       \field{sortinit}{K}
       \field{sortinithash}{c02bf6bff1c488450c352b40f5d853ab}
       \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{abstract}{Recent work has sought to understand the behavior of neural networks by comparing representations between layers and between different trained models. We examine methods for comparing neural network representations based on canonical correlation analysis ({CCA}). We show that {CCA} belongs to a family of statistics for measuring multivariate similarity, but that neither {CCA} nor any other statistic that is invariant to invertible linear transformation can measure meaningful similarities between representations of higher dimension than the number of data points. We introduce a similarity index that measures the relationship between representational similarity matrices and does not suffer from this limitation. This similarity index is equivalent to centered kernel alignment ({CKA}) and is also closely connected to {CCA}. Unlike {CCA}, {CKA} can reliably identify correspondences between representations in networks trained from different initializations.}
-      \field{day}{19}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{Sparse autoencoders ({SAEs}) are a popular technique for interpreting language model activations, and there is extensive recent work on improving {SAE} effectiveness. However, most prior work evaluates progress using unsupervised proxy metrics with unclear practical relevance. We introduce {SAEBench}, a comprehensive evaluation suite that measures {SAE} performance across eight diverse metrics, spanning interpretability, feature disentanglement and practical applications like unlearning. To enable systematic comparison, we open-source a suite of over 200 {SAEs} across eight recently proposed {SAE} architectures and training algorithms. Our evaluation reveals that gains on proxy metrics do not reliably translate to better practical performance. For instance, while Matryoshka {SAEs} slightly underperform on existing proxy metrics, they substantially outperform other architectures on feature disentanglement metrics; moreover, this advantage grows with {SAE} scale. By providing a standardized framework for measuring progress in {SAE} development, {SAEBench} enables researchers to study scaling trends and make nuanced comparisons between different {SAE} architectures and training methodologies. Our interactive interface enables researchers to flexibly visualize relationships between metrics across hundreds of open-source {SAEs} at: www.neuronpedia.org/sae-bench}
+      \field{day}{4}
       \field{eprinttype}{arxiv}
-      \field{month}{7}
-      \field{number}{{arXiv}:1905.00414}
-      \field{title}{Similarity of Neural Network Representations Revisited}
+      \field{month}{6}
+      \field{number}{{arXiv}:2503.09532}
+      \field{shorttitle}{{SAEBench}}
+      \field{title}{{SAEBench}: A Comprehensive Benchmark for Sparse Autoencoders in Language Model Interpretability}
       \field{urlyear}{2026}
-      \field{year}{2019}
+      \field{year}{2025}
       \field{dateera}{ce}
       \field{urldateera}{ce}
       \verb{doi}
-      \verb 10.48550/arXiv.1905.00414
+      \verb 10.48550/arXiv.2503.09532
       \endverb
       \verb{eprint}
-      \verb 1905.00414 [cs]
+      \verb 2503.09532 [cs]
       \endverb
       \verb{file}
-      \verb Preprint PDF:/Users/albertopuliga/Zotero/storage/HKH383B6/Kornblith et al. - 2019 - Similarity of Neural Network Representations Revisited.pdf:application/pdf
+      \verb Preprint PDF:/Users/albertopuliga/Zotero/storage/L7JL7TB2/Karvonen et al. - 2025 - SAEBench A Comprehensive Benchmark for Sparse Autoencoders in Language Model Interpretability.pdf:application/pdf;Snapshot:/Users/albertopuliga/Zotero/storage/2HJBRIFJ/2503.html:text/html
       \endverb
       \verb{urlraw}
-      \verb http://arxiv.org/abs/1905.00414
+      \verb http://arxiv.org/abs/2503.09532
       \endverb
       \verb{url}
-      \verb http://arxiv.org/abs/1905.00414
+      \verb http://arxiv.org/abs/2503.09532
       \endverb
-      \keyw{Computer Science - Machine Learning,Statistics - Machine Learning,Quantitative Biology - Neurons and Cognition}
-    \endentry
-    \entry{li_alpacaeval_2023}{misc}{}{}
-      \name{author}{8}{}{%
-        {{hash=b15f49c62474eb455b840b4fd198e965}{%
-           family={Li},
-           familyi={L\bibinitperiod},
-           given={Xuechen},
-           giveni={X\bibinitperiod}}}%
-        {{hash=733e3732b7e3ce5cf2b04cf5e9bd9cf1}{%
-           family={Zhang},
-           familyi={Z\bibinitperiod},
-           given={Tianyi},
-           giveni={T\bibinitperiod}}}%
-        {{hash=6b97c01cabce716a519f4cff0f3eea85}{%
-           family={Dubois},
-           familyi={D\bibinitperiod},
-           given={Yann},
-           giveni={Y\bibinitperiod}}}%
-        {{hash=9590cdbe06768705c6571bce7802fcc2}{%
-           family={Taori},
-           familyi={T\bibinitperiod},
-           given={Rohan},
-           giveni={R\bibinitperiod}}}%
-        {{hash=94f7047ed067ed3ca0ce018501dd9db9}{%
-           family={Gulrajani},
-           familyi={G\bibinitperiod},
-           given={Ishaan},
-           giveni={I\bibinitperiod}}}%
-        {{hash=c9ab8ac486d7f85ac914b1a8e51e512b}{%
-           family={Guestrin},
-           familyi={G\bibinitperiod},
-           given={Carlos},
-           giveni={C\bibinitperiod}}}%
-        {{hash=86c032bbc45c3b616f0a1170befc0e82}{%
-           family={Liang},
-           familyi={L\bibinitperiod},
-           given={Percy},
-           giveni={P\bibinitperiod}}}%
-        {{hash=e4f2ac032be1b6697af3acf11e45ba01}{%
-           family={Hashimoto},
-           familyi={H\bibinitperiod},
-           given={Tatsunori\bibnamedelima B.},
-           giveni={T\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
-      }
-      \strng{namehash}{f5d58679c26c92e5a3b4e434cbe1f0e3}
-      \strng{fullhash}{23e07bd2ca1f57c090579fda6fa4eccb}
-      \strng{fullhashraw}{23e07bd2ca1f57c090579fda6fa4eccb}
-      \strng{bibnamehash}{f5d58679c26c92e5a3b4e434cbe1f0e3}
-      \strng{authorbibnamehash}{f5d58679c26c92e5a3b4e434cbe1f0e3}
-      \strng{authornamehash}{f5d58679c26c92e5a3b4e434cbe1f0e3}
-      \strng{authorfullhash}{23e07bd2ca1f57c090579fda6fa4eccb}
-      \strng{authorfullhashraw}{23e07bd2ca1f57c090579fda6fa4eccb}
-      \field{sortinit}{L}
-      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{{AlpacaEval}: An Automatic Evaluator of Instruction-Following Models}
-      \field{year}{2023}
-      \verb{urlraw}
-      \verb https://github.com/tatsu-lab/alpaca_eval
-      \endverb
-      \verb{url}
-      \verb https://github.com/tatsu-lab/alpaca_eval
-      \endverb
+      \keyw{Computer Science - Machine Learning,Computer Science - Computation and Language}
     \endentry
     \entry{lieberum_gemma_2024}{misc}{}{}
       \name{author}{10}{}{%
@@ -952,56 +923,6 @@
       \endverb
       \keyw{Computer Science - Machine Learning,Computer Science - Computation and Language,Computer Science - Artificial Intelligence}
     \endentry
-    \entry{lin_truthfulqa_2022}{misc}{}{}
-      \name{author}{3}{}{%
-        {{hash=00fd40e4b8f963e9edd28ee849b64ef0}{%
-           family={Lin},
-           familyi={L\bibinitperiod},
-           given={Stephanie},
-           giveni={S\bibinitperiod}}}%
-        {{hash=9e4edc142b0564cbbb1cf93a401e4434}{%
-           family={Hilton},
-           familyi={H\bibinitperiod},
-           given={Jacob},
-           giveni={J\bibinitperiod}}}%
-        {{hash=6b07bfe62c5870808c4d460a3275f391}{%
-           family={Evans},
-           familyi={E\bibinitperiod},
-           given={Owain},
-           giveni={O\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {arXiv}%
-      }
-      \strng{namehash}{5859ef73d57f8294b3d2194eec5bbd72}
-      \strng{fullhash}{5859ef73d57f8294b3d2194eec5bbd72}
-      \strng{fullhashraw}{5859ef73d57f8294b3d2194eec5bbd72}
-      \strng{bibnamehash}{5859ef73d57f8294b3d2194eec5bbd72}
-      \strng{authorbibnamehash}{5859ef73d57f8294b3d2194eec5bbd72}
-      \strng{authornamehash}{5859ef73d57f8294b3d2194eec5bbd72}
-      \strng{authorfullhash}{5859ef73d57f8294b3d2194eec5bbd72}
-      \strng{authorfullhashraw}{5859ef73d57f8294b3d2194eec5bbd72}
-      \field{sortinit}{L}
-      \field{sortinithash}{7c47d417cecb1f4bd38d1825c427a61a}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{eprinttype}{arxiv}
-      \field{number}{{arXiv}:2109.07958}
-      \field{title}{{TruthfulQA}: Measuring How Models Mimic Human Falsehoods}
-      \field{year}{2022}
-      \verb{doi}
-      \verb 10.48550/arXiv.2109.07958
-      \endverb
-      \verb{eprint}
-      \verb 2109.07958 [cs]
-      \endverb
-      \verb{urlraw}
-      \verb http://arxiv.org/abs/2109.07958
-      \endverb
-      \verb{url}
-      \verb http://arxiv.org/abs/2109.07958
-      \endverb
-    \endentry
     \entry{lindsey_crosscoders_2024}{misc}{}{}
       \name{author}{6}{}{%
         {{hash=ec1b790c6969d88a0b5d9edf72c5657e}{%
@@ -1056,71 +977,6 @@
       \verb https://transformer-circuits.pub/2024/crosscoders/index.html
       \endverb
     \endentry
-    \entry{mikolov_efficient_2013}{misc}{}{}
-      \name{author}{4}{}{%
-        {{hash=a2d359b12ca2fadf0b40136a73f021bb}{%
-           family={Mikolov},
-           familyi={M\bibinitperiod},
-           given={Tomas},
-           giveni={T\bibinitperiod}}}%
-        {{hash=ee3f7d7b96add98106db907e189d6c13}{%
-           family={Chen},
-           familyi={C\bibinitperiod},
-           given={Kai},
-           giveni={K\bibinitperiod}}}%
-        {{hash=3d11e6f2a0d0a1183b2cf62996525afc}{%
-           family={Corrado},
-           familyi={C\bibinitperiod},
-           given={Greg},
-           giveni={G\bibinitperiod}}}%
-        {{hash=4aecfb0cc2e1e3b7899129fa2a94e2b8}{%
-           family={Dean},
-           familyi={D\bibinitperiod},
-           given={Jeffrey},
-           giveni={J\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {arXiv}%
-      }
-      \strng{namehash}{d4849f6d57e38d9b9846cfb360e45131}
-      \strng{fullhash}{f24c60896b6daa69474b40efb61f4e88}
-      \strng{fullhashraw}{f24c60896b6daa69474b40efb61f4e88}
-      \strng{bibnamehash}{d4849f6d57e38d9b9846cfb360e45131}
-      \strng{authorbibnamehash}{d4849f6d57e38d9b9846cfb360e45131}
-      \strng{authornamehash}{d4849f6d57e38d9b9846cfb360e45131}
-      \strng{authorfullhash}{f24c60896b6daa69474b40efb61f4e88}
-      \strng{authorfullhashraw}{f24c60896b6daa69474b40efb61f4e88}
-      \field{sortinit}{M}
-      \field{sortinithash}{4625c616857f13d17ce56f7d4f97d451}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{abstract}{We propose two novel model architectures for computing continuous vector representations of words from very large data sets. The quality of these representations is measured in a word similarity task, and the results are compared to the previously best performing techniques based on different types of neural networks. We observe large improvements in accuracy at much lower computational cost, i.e. it takes less than a day to learn high quality word vectors from a 1.6 billion words data set. Furthermore, we show that these vectors provide state-of-the-art performance on our test set for measuring syntactic and semantic word similarities.}
-      \field{day}{7}
-      \field{eprinttype}{arxiv}
-      \field{month}{9}
-      \field{number}{{arXiv}:1301.3781}
-      \field{title}{Efficient Estimation of Word Representations in Vector Space}
-      \field{urlyear}{2026}
-      \field{year}{2013}
-      \field{dateera}{ce}
-      \field{urldateera}{ce}
-      \verb{doi}
-      \verb 10.48550/arXiv.1301.3781
-      \endverb
-      \verb{eprint}
-      \verb 1301.3781 [cs]
-      \endverb
-      \verb{file}
-      \verb Full Text PDF:/Users/albertopuliga/Zotero/storage/LFC2I5JB/Mikolov et al. - 2013 - Efficient Estimation of Word Representations in Vector Space.pdf:application/pdf;Snapshot:/Users/albertopuliga/Zotero/storage/NTL6ZLFH/1301.html:text/html
-      \endverb
-      \verb{urlraw}
-      \verb http://arxiv.org/abs/1301.3781
-      \endverb
-      \verb{url}
-      \verb http://arxiv.org/abs/1301.3781
-      \endverb
-      \keyw{Computer Science - Computation and Language}
-    \endentry
     \entry{minder_crosscoder_2025}{misc}{}{}
       \name{author}{4}{}{%
         {{hash=6672093039e6f6a75720a78321beead7}{%
@@ -1174,40 +1030,6 @@
       \endverb
       \verb{url}
       \verb http://arxiv.org/abs/2502.01819
-      \endverb
-    \endentry
-    \entry{nanda_transformerlens_2022}{misc}{}{}
-      \name{author}{2}{}{%
-        {{hash=d2f8bae99d9538a95287ac272f977fc4}{%
-           family={Nanda},
-           familyi={N\bibinitperiod},
-           given={Neel},
-           giveni={N\bibinitperiod}}}%
-        {{hash=8bffc8ca92e4f0cd665c6a61ca7bca32}{%
-           family={Bloom},
-           familyi={B\bibinitperiod},
-           given={Joseph},
-           giveni={J\bibinitperiod}}}%
-      }
-      \strng{namehash}{30c9de4a6ceeb2e838a349ce35093af3}
-      \strng{fullhash}{30c9de4a6ceeb2e838a349ce35093af3}
-      \strng{fullhashraw}{30c9de4a6ceeb2e838a349ce35093af3}
-      \strng{bibnamehash}{30c9de4a6ceeb2e838a349ce35093af3}
-      \strng{authorbibnamehash}{30c9de4a6ceeb2e838a349ce35093af3}
-      \strng{authornamehash}{30c9de4a6ceeb2e838a349ce35093af3}
-      \strng{authorfullhash}{30c9de4a6ceeb2e838a349ce35093af3}
-      \strng{authorfullhashraw}{30c9de4a6ceeb2e838a349ce35093af3}
-      \field{sortinit}{N}
-      \field{sortinithash}{22369a73d5f88983a108b63f07f37084}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{title}{{TransformerLens}}
-      \field{year}{2022}
-      \verb{urlraw}
-      \verb https://github.com/TransformerLensOrg/TransformerLens
-      \endverb
-      \verb{url}
-      \verb https://github.com/TransformerLensOrg/TransformerLens
       \endverb
     \endentry
     \entry{ouyang_training_2022}{misc}{}{}
@@ -1355,130 +1177,81 @@
       \endverb
       \keyw{Computer Science - Machine Learning,Computer Science - Computation and Language,Computer Science - Artificial Intelligence}
     \endentry
-    \entry{park_linear_2024}{misc}{}{}
-      \name{author}{3}{}{%
-        {{hash=701d91d30f12fbde541e7ba75e1f0909}{%
-           family={Park},
-           familyi={P\bibinitperiod},
-           given={Kiho},
-           giveni={K\bibinitperiod}}}%
-        {{hash=8d3583a5b358d358019a5106c2c2e915}{%
-           family={Choe},
-           familyi={C\bibinitperiod},
-           given={Yo\bibnamedelima Joong},
-           giveni={Y\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
-        {{hash=30db2f42d0dd8cf10ef82c5eae10096e}{%
-           family={Veitch},
-           familyi={V\bibinitperiod},
-           given={Victor},
-           giveni={V\bibinitperiod}}}%
+    \entry{rafailov_direct_2024}{misc}{}{}
+      \name{author}{6}{}{%
+        {{hash=ba3b0dbc0637707e13b68258120d22ca}{%
+           family={Rafailov},
+           familyi={R\bibinitperiod},
+           given={Rafael},
+           giveni={R\bibinitperiod}}}%
+        {{hash=d6e9caed0d49d143fa1bf05559bc7c20}{%
+           family={Sharma},
+           familyi={S\bibinitperiod},
+           given={Archit},
+           giveni={A\bibinitperiod}}}%
+        {{hash=b9441ad4287a1b5f251258a6fd6afb3a}{%
+           family={Mitchell},
+           familyi={M\bibinitperiod},
+           given={Eric},
+           giveni={E\bibinitperiod}}}%
+        {{hash=160929a7e6ceecdf3f7c9a13abd5ea35}{%
+           family={Ermon},
+           familyi={E\bibinitperiod},
+           given={Stefano},
+           giveni={S\bibinitperiod}}}%
+        {{hash=2214edb8305f7ccd7cdc310b3a8ae1b4}{%
+           family={Manning},
+           familyi={M\bibinitperiod},
+           given={Christopher\bibnamedelima D.},
+           giveni={C\bibinitperiod\bibinitdelim D\bibinitperiod}}}%
+        {{hash=058e82495825ae376c6a96a12169e6ee}{%
+           family={Finn},
+           familyi={F\bibinitperiod},
+           given={Chelsea},
+           giveni={C\bibinitperiod}}}%
       }
       \list{publisher}{1}{%
         {arXiv}%
       }
-      \strng{namehash}{a1f79c3c79aa5e2aad2b25ee3d7e8670}
-      \strng{fullhash}{a1f79c3c79aa5e2aad2b25ee3d7e8670}
-      \strng{fullhashraw}{a1f79c3c79aa5e2aad2b25ee3d7e8670}
-      \strng{bibnamehash}{a1f79c3c79aa5e2aad2b25ee3d7e8670}
-      \strng{authorbibnamehash}{a1f79c3c79aa5e2aad2b25ee3d7e8670}
-      \strng{authornamehash}{a1f79c3c79aa5e2aad2b25ee3d7e8670}
-      \strng{authorfullhash}{a1f79c3c79aa5e2aad2b25ee3d7e8670}
-      \strng{authorfullhashraw}{a1f79c3c79aa5e2aad2b25ee3d7e8670}
-      \field{sortinit}{P}
-      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \strng{namehash}{a2b9e9f544e815dea0216e294ca2afca}
+      \strng{fullhash}{66dbe48781d53ee437c443a92555f671}
+      \strng{fullhashraw}{66dbe48781d53ee437c443a92555f671}
+      \strng{bibnamehash}{a2b9e9f544e815dea0216e294ca2afca}
+      \strng{authorbibnamehash}{a2b9e9f544e815dea0216e294ca2afca}
+      \strng{authornamehash}{a2b9e9f544e815dea0216e294ca2afca}
+      \strng{authorfullhash}{66dbe48781d53ee437c443a92555f671}
+      \strng{authorfullhashraw}{66dbe48781d53ee437c443a92555f671}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
       \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{abstract}{Informally, the 'linear representation hypothesis' is the idea that high-level concepts are represented linearly as directions in some representation space. In this paper, we address two closely related questions: What does "linear representation" actually mean? And, how do we make sense of geometric notions (e.g., cosine similarity or projection) in the representation space? To answer these, we use the language of counterfactuals to give two formalizations of "linear representation", one in the output (word) representation space, and one in the input (sentence) space. We then prove these connect to linear probing and model steering, respectively. To make sense of geometric notions, we use the formalization to identify a particular (non-Euclidean) inner product that respects language structure in a sense we make precise. Using this causal inner product, we show how to unify all notions of linear representation. In particular, this allows the construction of probes and steering vectors using counterfactual pairs. Experiments with {LLaMA}-2 demonstrate the existence of linear representations of concepts, the connection to interpretation and control, and the fundamental role of the choice of inner product.}
-      \field{day}{17}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{While large-scale unsupervised language models ({LMs}) learn broad world knowledge and some reasoning skills, achieving precise control of their behavior is difficult due to the completely unsupervised nature of their training. Existing methods for gaining such steerability collect human labels of the relative quality of model generations and fine-tune the unsupervised {LM} to align with these preferences, often with reinforcement learning from human feedback ({RLHF}). However, {RLHF} is a complex and often unstable procedure, first fitting a reward model that reflects the human preferences, and then fine-tuning the large unsupervised {LM} using reinforcement learning to maximize this estimated reward without drifting too far from the original model. In this paper we introduce a new parameterization of the reward model in {RLHF} that enables extraction of the corresponding optimal policy in closed form, allowing us to solve the standard {RLHF} problem with only a simple classification loss. The resulting algorithm, which we call Direct Preference Optimization ({DPO}), is stable, performant, and computationally lightweight, eliminating the need for sampling from the {LM} during fine-tuning or performing significant hyperparameter tuning. Our experiments show that {DPO} can fine-tune {LMs} to align with human preferences as well as or better than existing methods. Notably, fine-tuning with {DPO} exceeds {PPO}-based {RLHF} in ability to control sentiment of generations, and matches or improves response quality in summarization and single-turn dialogue while being substantially simpler to implement and train.}
+      \field{day}{29}
       \field{eprinttype}{arxiv}
       \field{month}{7}
-      \field{number}{{arXiv}:2311.03658}
-      \field{title}{The Linear Representation Hypothesis and the Geometry of Large Language Models}
+      \field{number}{{arXiv}:2305.18290}
+      \field{shorttitle}{Direct Preference Optimization}
+      \field{title}{Direct Preference Optimization: Your Language Model is Secretly a Reward Model}
       \field{urlyear}{2026}
       \field{year}{2024}
       \field{dateera}{ce}
       \field{urldateera}{ce}
       \verb{doi}
-      \verb 10.48550/arXiv.2311.03658
+      \verb 10.48550/arXiv.2305.18290
       \endverb
       \verb{eprint}
-      \verb 2311.03658 [cs]
+      \verb 2305.18290 [cs]
       \endverb
       \verb{file}
-      \verb Preprint PDF:/Users/albertopuliga/Zotero/storage/9BDWUMCV/Park et al. - 2024 - The Linear Representation Hypothesis and the Geometry of Large Language Models.pdf:application/pdf;Snapshot:/Users/albertopuliga/Zotero/storage/IIK3HEKZ/2311.html:text/html
+      \verb Preprint PDF:/Users/albertopuliga/Zotero/storage/7FRTPER6/Rafailov et al. - 2024 - Direct Preference Optimization Your Language Model is Secretly a Reward Model.pdf:application/pdf;Snapshot:/Users/albertopuliga/Zotero/storage/CL7VX2FE/2305.html:text/html
       \endverb
       \verb{urlraw}
-      \verb http://arxiv.org/abs/2311.03658
+      \verb http://arxiv.org/abs/2305.18290
       \endverb
       \verb{url}
-      \verb http://arxiv.org/abs/2311.03658
+      \verb http://arxiv.org/abs/2305.18290
       \endverb
-      \keyw{Computer Science - Machine Learning,Computer Science - Computation and Language,Computer Science - Artificial Intelligence,Statistics - Machine Learning}
-    \endentry
-    \entry{penedo_fineweb_2024}{misc}{}{}
-      \name{author}{6}{}{%
-        {{hash=4805d7dfc36e7883156020c29c44a3f3}{%
-           family={Penedo},
-           familyi={P\bibinitperiod},
-           given={Guilherme},
-           giveni={G\bibinitperiod}}}%
-        {{hash=52cb94a918fc84b7b843405826b065e6}{%
-           family={Kydlíček},
-           familyi={K\bibinitperiod},
-           given={Hynek},
-           giveni={H\bibinitperiod}}}%
-        {{hash=f4e9046868708e1f2409d62a1f37c3e9}{%
-           family={Lozhkov},
-           familyi={L\bibinitperiod},
-           given={Anton},
-           giveni={A\bibinitperiod}}}%
-        {{hash=bf2c5929fec171ba307314e263de3c1e}{%
-           family={Mitchell},
-           familyi={M\bibinitperiod},
-           given={Margaret},
-           giveni={M\bibinitperiod}}}%
-        {{hash=c34c67badfd5b3624027e9c8c77a69f6}{%
-           family={Wolf},
-           familyi={W\bibinitperiod},
-           given={Thomas},
-           giveni={T\bibinitperiod}}}%
-        {{hash=8f07b94fd51174476bcb18214d284ade}{%
-           family={{von Werra}},
-           familyi={v\bibinitperiod},
-           given={Leandro},
-           giveni={L\bibinitperiod}}}%
-      }
-      \list{publisher}{1}{%
-        {arXiv}%
-      }
-      \strng{namehash}{be2e6f5aab73100d39b28a7c48b4c184}
-      \strng{fullhash}{e78cd1ec794084e5efe40c7ea2d9716e}
-      \strng{fullhashraw}{e78cd1ec794084e5efe40c7ea2d9716e}
-      \strng{bibnamehash}{be2e6f5aab73100d39b28a7c48b4c184}
-      \strng{authorbibnamehash}{be2e6f5aab73100d39b28a7c48b4c184}
-      \strng{authornamehash}{be2e6f5aab73100d39b28a7c48b4c184}
-      \strng{authorfullhash}{e78cd1ec794084e5efe40c7ea2d9716e}
-      \strng{authorfullhashraw}{e78cd1ec794084e5efe40c7ea2d9716e}
-      \field{sortinit}{P}
-      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
-      \field{labelnamesource}{author}
-      \field{labeltitlesource}{title}
-      \field{eprinttype}{arxiv}
-      \field{number}{{arXiv}:2406.17557}
-      \field{title}{The {FineWeb} Datasets: Decanting the Web for the Finest Text Data at Scale}
-      \field{year}{2024}
-      \verb{doi}
-      \verb 10.48550/arXiv.2406.17557
-      \endverb
-      \verb{eprint}
-      \verb 2406.17557 [cs]
-      \endverb
-      \verb{urlraw}
-      \verb http://arxiv.org/abs/2406.17557
-      \endverb
-      \verb{url}
-      \verb http://arxiv.org/abs/2406.17557
-      \endverb
+      \keyw{Computer Science - Machine Learning,Computer Science - Computation and Language,Computer Science - Artificial Intelligence}
     \endentry
     \entry{rajamanoharan_improving_2024}{misc}{}{}
       \name{author}{8}{}{%
@@ -1699,6 +1472,58 @@
       \verb https://transformer-circuits.pub/2024/scaling-monosemanticity/
       \endverb
     \endentry
+    \entry{xu_tracking_nodate}{online}{}{}
+      \name{author}{4}{}{%
+        {{hash=9eda43a644030ac3eceaf837cb2489ac}{%
+           family={Xu},
+           familyi={X\bibinitperiod},
+           given={Yang},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=141a1e7404c5b53546fb09821c56717a}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Yi},
+           giveni={Y\bibinitperiod}}}%
+        {{hash=7bf6bb2eeb6bca9ffadd88309e95201d}{%
+           family={Huang},
+           familyi={H\bibinitperiod},
+           given={Hengguan},
+           giveni={H\bibinitperiod}}}%
+        {{hash=c8cf19241225247d6d07dbf8a516b8ed}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Hao},
+           giveni={H\bibinitperiod}}}%
+      }
+      \strng{namehash}{27132c6cb44b714617bf10b11e58f9bd}
+      \strng{fullhash}{7e24c758106fc428c74bc80ec30e2bb3}
+      \strng{fullhashraw}{7e24c758106fc428c74bc80ec30e2bb3}
+      \strng{bibnamehash}{27132c6cb44b714617bf10b11e58f9bd}
+      \strng{authorbibnamehash}{27132c6cb44b714617bf10b11e58f9bd}
+      \strng{authornamehash}{27132c6cb44b714617bf10b11e58f9bd}
+      \strng{authorfullhash}{7e24c758106fc428c74bc80ec30e2bb3}
+      \strng{authorfullhashraw}{7e24c758106fc428c74bc80ec30e2bb3}
+      \field{sortinit}{X}
+      \field{sortinithash}{1965c258adceecf23ce3d67b05113442}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{shorttitle}
+      \field{abstract}{Understanding training dynamics and feature evolution is crucial for the mechanistic interpretability of large language models ({LLMs}). Although sparse autoencoders ({SAEs}) have been used to identify features within {LLMs}, a clear picture of how these features evolve during training remains elusive. In this study, we (1) introduce {SAE}-Track, a novel method for efficiently obtaining a continual series of {SAEs}, providing the foundation for a mechanistic study that covers (2) the semantic evolution of features, (3) the underlying processes of feature formation, and (4) the directional drift of feature vectors. Our work provides new insights into the dynamics of features in {LLMs}, enhancing our understanding of training mechanisms and feature evolution. For reproducibility, our code is available at https://github.com/Superposition09m/{SAE}-Track.}
+      \field{langid}{english}
+      \field{shorttitle}{Tracking the Feature Dynamics in {LLM} Training}
+      \field{title}{Tracking the Feature Dynamics in {LLM} Training: A Mechanistic Study}
+      \field{titleaddon}{{arXiv}.org}
+      \field{urlyear}{2026}
+      \field{urldateera}{ce}
+      \verb{file}
+      \verb Full Text PDF:/Users/albertopuliga/Zotero/storage/RX42APEM/Xu et al. - Tracking the Feature Dynamics in LLM Training A Mechanistic Study.pdf:application/pdf
+      \endverb
+      \verb{urlraw}
+      \verb https://arxiv.org/abs/2412.17626v3
+      \endverb
+      \verb{url}
+      \verb https://arxiv.org/abs/2412.17626v3
+      \endverb
+    \endentry
     \entry{zhou_lima_2023}{misc}{}{}
       \name{author}{15}{}{%
         {{hash=067dd1a8f452ca3d84eded64a0e71ff4}{%
@@ -1819,6 +1644,81 @@
       \verb http://arxiv.org/abs/2305.11206
       \endverb
       \keyw{Computer Science - Machine Learning,Computer Science - Computation and Language,Computer Science - Artificial Intelligence}
+    \endentry
+    \entry{zou_universal_2023}{misc}{}{}
+      \name{author}{6}{}{%
+        {{hash=4817500e279ce97b8c8f18b92a2a6ead}{%
+           family={Zou},
+           familyi={Z\bibinitperiod},
+           given={Andy},
+           giveni={A\bibinitperiod}}}%
+        {{hash=5ddb055abfa86a367168a9254a94cdfb}{%
+           family={Wang},
+           familyi={W\bibinitperiod},
+           given={Zifan},
+           giveni={Z\bibinitperiod}}}%
+        {{hash=93330b46aec6ec2750a8adced7fef821}{%
+           family={Carlini},
+           familyi={C\bibinitperiod},
+           given={Nicholas},
+           giveni={N\bibinitperiod}}}%
+        {{hash=9622bf07a4de0cfdfb06f4540c32350d}{%
+           family={Nasr},
+           familyi={N\bibinitperiod},
+           given={Milad},
+           giveni={M\bibinitperiod}}}%
+        {{hash=0288715a83a3349e44f9292c5c2149f7}{%
+           family={Kolter},
+           familyi={K\bibinitperiod},
+           given={J.\bibnamedelimi Zico},
+           giveni={J\bibinitperiod\bibinitdelim Z\bibinitperiod}}}%
+        {{hash=ca53191803a563335db0f1917ff556b2}{%
+           family={Fredrikson},
+           familyi={F\bibinitperiod},
+           given={Matt},
+           giveni={M\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {arXiv}%
+      }
+      \strng{namehash}{fd7e260afa5e3ffb199d6f2f8e7a56b2}
+      \strng{fullhash}{692741b47931cf6bb7be17e965f8cd39}
+      \strng{fullhashraw}{692741b47931cf6bb7be17e965f8cd39}
+      \strng{bibnamehash}{fd7e260afa5e3ffb199d6f2f8e7a56b2}
+      \strng{authorbibnamehash}{fd7e260afa5e3ffb199d6f2f8e7a56b2}
+      \strng{authornamehash}{fd7e260afa5e3ffb199d6f2f8e7a56b2}
+      \strng{authorfullhash}{692741b47931cf6bb7be17e965f8cd39}
+      \strng{authorfullhashraw}{692741b47931cf6bb7be17e965f8cd39}
+      \field{sortinit}{Z}
+      \field{sortinithash}{96892c0b0a36bb8557c40c49813d48b3}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{Because "out-of-the-box" large language models are capable of generating a great deal of objectionable content, recent work has focused on aligning these models in an attempt to prevent undesirable generation. While there has been some success at circumventing these measures -- so-called "jailbreaks" against {LLMs} -- these attacks have required significant human ingenuity and are brittle in practice. In this paper, we propose a simple and effective attack method that causes aligned language models to generate objectionable behaviors. Specifically, our approach finds a suffix that, when attached to a wide range of queries for an {LLM} to produce objectionable content, aims to maximize the probability that the model produces an affirmative response (rather than refusing to answer). However, instead of relying on manual engineering, our approach automatically produces these adversarial suffixes by a combination of greedy and gradient-based search techniques, and also improves over past automatic prompt generation methods. Surprisingly, we find that the adversarial prompts generated by our approach are quite transferable, including to black-box, publicly released {LLMs}. Specifically, we train an adversarial attack suffix on multiple prompts (i.e., queries asking for many different types of objectionable content), as well as multiple models (in our case, Vicuna-7B and 13B). When doing so, the resulting attack suffix is able to induce objectionable content in the public interfaces to {ChatGPT}, Bard, and Claude, as well as open source {LLMs} such as {LLaMA}-2-Chat, Pythia, Falcon, and others. In total, this work significantly advances the state-of-the-art in adversarial attacks against aligned language models, raising important questions about how such systems can be prevented from producing objectionable information. Code is available at github.com/llm-attacks/llm-attacks.}
+      \field{day}{20}
+      \field{eprinttype}{arxiv}
+      \field{month}{12}
+      \field{number}{{arXiv}:2307.15043}
+      \field{title}{Universal and Transferable Adversarial Attacks on Aligned Language Models}
+      \field{urlyear}{2026}
+      \field{year}{2023}
+      \field{dateera}{ce}
+      \field{urldateera}{ce}
+      \verb{doi}
+      \verb 10.48550/arXiv.2307.15043
+      \endverb
+      \verb{eprint}
+      \verb 2307.15043 [cs]
+      \endverb
+      \verb{file}
+      \verb Preprint PDF:/Users/albertopuliga/Zotero/storage/685CWUWA/Zou et al. - 2023 - Universal and Transferable Adversarial Attacks on Aligned Language Models.pdf:application/pdf;Snapshot:/Users/albertopuliga/Zotero/storage/KYB3ZG6H/2307.html:text/html
+      \endverb
+      \verb{urlraw}
+      \verb http://arxiv.org/abs/2307.15043
+      \endverb
+      \verb{url}
+      \verb http://arxiv.org/abs/2307.15043
+      \endverb
+      \keyw{Computer Science - Machine Learning,Computer Science - Computation and Language,Computer Science - Artificial Intelligence,Computer Science - Cryptography and Security}
     \endentry
   \enddatalist
 \endrefsection
