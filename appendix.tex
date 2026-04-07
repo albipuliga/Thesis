@@ -1,0 +1,23 @@
+\section{Literature Review Summary}
+\label{sec:appendix-literature-summary}
+
+This appendix summarises the studies that most directly motivate the research design and clarifies how each contributes to the present project.
+
+\begin{itemize}
+    \item \textbf{Elhage et al.\ (2022)} \parencite{elhage_toy_2022} establish the superposition framework, explaining why individual neurons are often polysemantic and why neuron-level interpretability is limited.
+    \item \textbf{Templeton et al.\ (2024)} \parencite{templeton_scaling_2024} demonstrate that sparse autoencoders can recover large numbers of interpretable, causally meaningful features from frontier language models, making feature-level comparison feasible.
+    \item \textbf{Ouyang et al.\ (2022)} \parencite{ouyang_training_2022} show that post-training techniques such as supervised fine-tuning and RLHF can strongly improve instruction-following, helpfulness, and safety.
+    \item \textbf{Zhou et al.\ (2023)} \parencite{zhou_lima_2023} argue that most capability is learned during pre-training and that a relatively small amount of fine-tuning data can substantially reshape model behaviour, motivating the superficial alignment hypothesis.
+    \item \textbf{Du et al.\ (2025)} \parencite{du_how_2025} provide direct mechanistic evidence that post-training affects some behavioural directions, especially refusal, more than core factual knowledge representations.
+\end{itemize}
+
+\section{Implications for the Present Study}
+\label{sec:appendix-literature-implications}
+
+The literature review motivates the methodology in three ways.
+
+\begin{itemize}
+    \item It justifies the use of sparse autoencoders as the main interpretability tool, because superposition makes individual neurons an unreliable unit of analysis.
+    \item It motivates comparing a base model with its instruction-tuned counterpart, because post-training is the stage where alignment-relevant behavioural changes are introduced.
+    \item It frames the core empirical question of the project: whether post-training creates new interpretable features, suppresses existing ones, or primarily changes the activation patterns of a largely preserved feature set.
+\end{itemize}

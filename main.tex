@@ -1,0 +1,40 @@
+\documentclass[12pt, letterpaper]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{mathptmx}
+\usepackage{geometry}
+\usepackage{appendix}
+\usepackage{pdfpages}
+\usepackage{amsmath, amsthm, amssymb}
+\usepackage{booktabs}
+\geometry{a4paper, margin=1in}
+
+\usepackage{graphicx}
+\usepackage{setspace}
+\doublespacing
+
+\usepackage[style=numeric, backend=biber, sortcites=true, sorting=nyt]{biblatex}
+\addbibresource{Bibliography.bib}
+\usepackage{titlesec}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\setlength{\headheight}{14.5pt}
+\pagestyle{fancy}
+\fancyhead[L]{Literature Review and Methodology}
+\fancyhead[R]{\thepage}
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+
+\graphicspath{{./}}
+
+\begin{document}
+
+\input{methodology-chapter.tex}
+
+\clearpage
+\appendix
+\input{appendix.tex}
+
+\clearpage
+\printbibliography
+
+\end{document}
