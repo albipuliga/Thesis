@@ -1,0 +1,12 @@
+\pagestyle{fancy}
+
+\section{Discussion}
+
+\subsection{Limitations and Robustness}
+\label{sec:limitations-robustness}
+
+The threshold sensitivity sweep covers the main free parameter in the matching procedure and shows that the qualitative result, modified greater than preserved throughout, is robust. The dual-LLM labelling protocol guards against single-annotator bias, and the consensus filter discards ambiguous cases. Norm-calibrated steering uses empirical mean activations rather than fixed $\alpha$ values, controlling for large cross-feature variation in natural firing magnitudes.
+
+The main remaining sources of uncertainty are exactly those already declared in the methodology: single layer, single model pair, reduced sample size, per-sequence rather than per-token correlation, raw decoder norms in steering, single-position KL, and overtly categorical targeted prompts. None of these would be expected to reverse the central conclusion on present evidence. The modified category is too dominant, and the targeted analysis too one-sided, for a small methodological tweak to flip the result. But each limitation constrains how broadly the conclusion can be claimed to hold.
+
+The most consequential limitation is the single-layer scope. \textcite{du_how_2025} report that post-training effects vary substantially across depth, and a more complete picture would therefore require the same analysis to be repeated at an early layer, a mid layer, and a late layer. That is the clearest next step.

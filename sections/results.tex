@@ -1,0 +1,40 @@
+\pagestyle{fancy}
+
+\section{Results}
+\label{sec:results}
+
+\subsection{Macroscopic Picture (RQ1)}
+\label{subsec:rq1-results}
+
+At the strict literature thresholds $\tau_d = 0.8$ and $\tau_a = 0.7$, only 34 of the 8,142 active PT features at layer 13 are preserved, approximately 0.4\%. A further 2,436 features, or 29.9\%, are modified; 5,672, or 69.7\%, are PT-exclusive; and 3,407 of the 4,828 active IT features, or 70.6\%, are IT-exclusive. Mean MMCS is 0.634 for PT$\rightarrow$IT, well below the level one would expect under strict feature reuse.
+
+At the moderate thresholds used as the primary setting, $\tau_d = 0.7$ and $\tau_a = 0.3$, the shape changes but the message does not: 241 features are preserved (3.0\%), 4,017 are modified (49.3\%), 3,884 are PT-exclusive (47.7\%), and 1,899 are IT-exclusive (39.3\%). The modified category is now the largest single bucket, which is exactly the wrapper-hypothesis prediction: most features have a recognisable cross-model counterpart, but their firing patterns differ.
+
+The threshold sensitivity sweep strengthens that reading. The modified category exceeds 30\% of active PT features across the entire $5 \times 5$ grid, while the preserved category never rises above 12\%. The qualitative dominance of modified over preserved is therefore not a threshold artefact.
+
+\subsection{Labelling and Cross-Model Consensus}
+\label{subsec:labelling-results}
+
+Fifty features per category are labelled by both Claude Haiku 4.5 and GPT-4.1-nano. Inter-model agreement on the categorical label is 74\% for preserved features, 54\% for modified, 44\% for PT-exclusive, and 48\% for IT-exclusive. This is a clean monotonic pattern: the more ambiguous the matching status, the harder the semantic labelling task.
+
+Claude's labels for IT-exclusive features lean strongly toward \texttt{language\_syntax} and \texttt{formatting}, with very few in \texttt{instruction\_style} and none in \texttt{safety\_alignment}. GPT-4.1-nano yields a flatter distribution over the same sample. Neither model spontaneously identifies a meaningful number of IT-exclusive safety features in the labelling sample. That is itself a non-trivial result, because a strong creation-based interpretation of post-training would predict the opposite.
+
+The high-confidence consensus list, defined by confidence at least 4 from both models, contains 14 IT-exclusive features, 13 PT-exclusive, 22 modified, and 37 preserved. This consensus subset is what feeds the targeted analysis and steering stages.
+
+\subsection{Targeted Differential Analysis (RQ2)}
+\label{subsec:rq2-results}
+
+Welch's $t$-test on JailbreakBench harmful-versus-benign prompts surfaces 20 features per model. When the IT-side top-20 safety features are looked up in the matching results, 5 have a clear PT match, 3 are IT-exclusive, and 12 fall into a no-clear-match zone where only one matching criterion is satisfied. Repeating the same exercise on Alpaca instruction prompts yields 7 with a PT match, 6 IT-exclusive, and 7 ambiguous.
+
+This is the central empirical result of the thesis. If post-training had installed new safety- and instruction-relevant features as discrete entities, the top differential IT features should overwhelmingly have been IT-exclusive. They are not. The largest bucket is the ambiguous or modified zone, and clear PT matches outnumber clear IT-exclusives in both probes. On this evidence, post-training is re-weighting features the base model already had, which is precisely the wrapper prediction.
+
+\subsection{Causal Verification via Steering (RQ3)}
+\label{subsec:rq3-results}
+
+\textbf{Case A: IT-exclusive features steered in PT.} Feature 241, with mean activation 173.3 and labelled as a wrongdoing or harmful-activity detector, produces graded behavioural changes when injected into the base model. At multiplier $m = +3$, corresponding to $\alpha \approx +520$, KL divergence ranges from 0.03 to 0.06 and 5 of 9 generations differ visibly from baseline. At $m = +10$, with $\alpha \approx +1733$, KL reaches 0.4 to 0.96 and all 9 generations differ. Importantly, the qualitative effect is not ``the base model started refusing harmful prompts'' but rather ``the base model became more verbose, more first-person, and more prone to topic drift.'' Features 222, 446, and 2006 show smaller but qualitatively similar effects. The feature is therefore causal, but its label appears to describe a firing condition rather than a full behavioural target.
+
+\textbf{Case B: PT-exclusive features steered in IT.} Features 329 and 75 produce monotonic dose-response curves under both positive and negative steering, with KL values from approximately 0 at $m = \pm 1$ to about 0.03 at $m = \pm 10$. Steering is therefore causal on output distributions even for features that the matching pipeline labelled as PT-exclusive, which suggests that the IT model remains sensitive to these directions even though its own SAE dictionary did not learn dedicated counterparts for them.
+
+\textbf{Case C: modified features in IT.} Features 222 and 446 produce clean monotonic dose-response curves inside the IT model itself: KL is around $10^{-3}$ at $m = \pm 1$, around $10^{-2}$ at $m = \pm 5$, and between 0.46 and 0.84 at $m = +20$. All three generations differ at $m = +10$ and $m = +20$ for both features. This is the clearest evidence for the modulation reading: the feature direction is shared across PT and IT, but its natural firing strength is what post-training tunes.
+
+Taken together, the steering results support a graded version of the wrapper hypothesis. Post-training does not appear to create discrete new safety circuits at layer 13 of Gemma 3 1B. Instead, it adjusts the firing patterns and effective strengths of features that already exist as directions in the base model's residual stream.

@@ -1,0 +1,12 @@
+\pagestyle{fancy}
+
+\section{Conclusion}
+\label{sec:conclusions}
+
+The empirical answer this thesis arrives at is straightforward: at layer 13 of Gemma 3 1B, instruction tuning predominantly reorganises features the base model already had rather than installing new ones. Three independent lines of evidence converge on that conclusion. First, the matching results show that under every threshold setting in the $5 \times 5$ grid the modified category vastly outnumbers the preserved category, meaning that most features have a cross-model counterpart but a different firing pattern. Second, when IT-side features are surfaced by safety and instruction probes, the largest bucket is ``matched to a PT feature'' rather than ``IT-exclusive.'' Third, steering both IT-exclusive and modified features produces graded behavioural change, but that change reads as modulation rather than the introduction of a new behavioural primitive.
+
+\textbf{Implications for alignment research.} If this picture generalises, then interventions that aim to ``remove safety features'' or ``find the refusal feature'' are looking for the wrong kind of object. The relevant unit is not a discrete post-training-introduced feature but a modulation pattern over pre-existing features. That reframes a substantial portion of the alignment-by-interpretation programme: red-teaming should assume capabilities are never deleted, only down-weighted; defences should target activation distributions rather than feature presence; and crosscoder-style joint dictionaries are likely to be the right tool for the job because they make modulation explicit by construction.
+
+\textbf{Practical takeaway for practitioners.} The pipeline released alongside this thesis can be rerun on future paired base/IT releases whenever Gemma-Scope-style SAEs become available. The dual-LLM consensus protocol generalises naturally to other feature-labelling tasks and is inexpensive enough for student-budget experimentation. The norm-calibrated steering convention, $\alpha = m \times \text{mean\_activation}$, yields interventions that are more interpretable than fixed raw-vector magnitudes and may therefore be useful beyond this particular thesis.
+
+On the evidence presented here, the wrapper hypothesis is not merely a convenient metaphor. It is a testable empirical claim about how post-training reshapes language models, and at layer 13 of Gemma 3 1B it survives the test.

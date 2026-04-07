@@ -3,8 +3,7 @@
 \providecommand\hyper@newdestlabel[2]{}
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
-\@writefile{toc}{\contentsline {section}{\numberline {1}Executive Summary / Abstract}{1}{section.1}\protected@file@percent }
-\newlabel{sec:abstract}{{1}{1}{Executive Summary / Abstract}{section.1}{}}
+\@input{sections/introduction.aux}
 \abx@aux@cite{0}{ouyang_training_2022}
 \abx@aux@segm{0}{0}{ouyang_training_2022}
 \abx@aux@cite{0}{rafailov_direct_2024}
@@ -17,8 +16,6 @@
 \abx@aux@segm{0}{0}{hubinger_sleeper_2024}
 \abx@aux@cite{0}{zou_universal_2023}
 \abx@aux@segm{0}{0}{zou_universal_2023}
-\@writefile{toc}{\contentsline {section}{\numberline {2}Problem and Motivation}{2}{section.2}\protected@file@percent }
-\newlabel{sec:problem-motivation}{{2}{2}{Problem and Motivation}{section.2}{}}
 \abx@aux@cite{0}{elhage_toy_2022}
 \abx@aux@segm{0}{0}{elhage_toy_2022}
 \abx@aux@cite{0}{bricken_monosemanticity_2023}
@@ -47,66 +44,27 @@
 \abx@aux@segm{0}{0}{lindsey_crosscoders_2024}
 \abx@aux@cite{0}{minder_crosscoder_2025}
 \abx@aux@segm{0}{0}{minder_crosscoder_2025}
-\@writefile{toc}{\contentsline {section}{\numberline {3}Prior Art and Research Question}{3}{section.3}\protected@file@percent }
-\newlabel{sec:prior-art}{{3}{3}{Prior Art and Research Question}{section.3}{}}
 \abx@aux@cite{0}{templeton_scaling_2024}
 \abx@aux@segm{0}{0}{templeton_scaling_2024}
 \abx@aux@cite{0}{templeton_scaling_2024}
 \abx@aux@segm{0}{0}{templeton_scaling_2024}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Main Contribution}{5}{section.4}\protected@file@percent }
-\newlabel{sec:main-contribution}{{4}{5}{Main Contribution}{section.4}{}}
+\@input{sections/methodology.aux}
 \abx@aux@cite{0}{du_how_2025}
 \abx@aux@segm{0}{0}{du_how_2025}
-\@writefile{toc}{\contentsline {section}{\numberline {5}Methodology}{6}{section.5}\protected@file@percent }
-\newlabel{sec:methodology}{{5}{6}{Methodology}{section.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.1}Experimental Overview and Research Design}{6}{subsection.5.1}\protected@file@percent }
-\newlabel{subsec:experimental-overview}{{5.1}{6}{Experimental Overview and Research Design}{subsection.5.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {1}{\ignorespaces Data and activation collection pipeline. Identical FineWeb sequences are processed by both the PT and IT variants of Gemma 3 1B, and the residual stream at layer 13 is decomposed into sparse feature vectors by the corresponding Gemma Scope 2 SAEs.}}{7}{figure.1}\protected@file@percent }
-\newlabel{fig:data-activation-collection}{{1}{7}{Data and activation collection pipeline. Identical FineWeb sequences are processed by both the PT and IT variants of Gemma 3 1B, and the residual stream at layer 13 is decomposed into sparse feature vectors by the corresponding Gemma Scope 2 SAEs}{figure.1}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {2}{\ignorespaces Feature comparison pipeline. Layer-13 sparse feature vectors and decoder matrices from both models are matched across PT and IT, then classified into preserved, modified, PT-exclusive, and IT-exclusive categories before targeted analysis and labelling.}}{7}{figure.2}\protected@file@percent }
-\newlabel{fig:feature-comparison}{{2}{7}{Feature comparison pipeline. Layer-13 sparse feature vectors and decoder matrices from both models are matched across PT and IT, then classified into preserved, modified, PT-exclusive, and IT-exclusive categories before targeted analysis and labelling}{figure.2}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3}{\ignorespaces Validation and results pipeline. Categorised features feed into threshold sensitivity analysis, targeted safety and instruction probing, and causal verification through activation steering, converging on an empirical test of the wrapper hypothesis.}}{7}{figure.3}\protected@file@percent }
-\newlabel{fig:validation-results}{{3}{7}{Validation and results pipeline. Categorised features feed into threshold sensitivity analysis, targeted safety and instruction probing, and causal verification through activation steering, converging on an empirical test of the wrapper hypothesis}{figure.3}{}}
 \abx@aux@cite{0}{rajamanoharan_improving_2024}
 \abx@aux@segm{0}{0}{rajamanoharan_improving_2024}
 \abx@aux@cite{0}{lieberum_gemma_2024}
 \abx@aux@segm{0}{0}{lieberum_gemma_2024}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.2}Models and SAEs}{8}{subsection.5.2}\protected@file@percent }
-\newlabel{subsec:models-saes}{{5.2}{8}{Models and SAEs}{subsection.5.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.3}Data and Activation Collection}{8}{subsection.5.3}\protected@file@percent }
-\newlabel{subsec:data-activation}{{5.3}{8}{Data and Activation Collection}{subsection.5.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.4}Feature Matching and Classification}{9}{subsection.5.4}\protected@file@percent }
-\newlabel{subsec:feature-matching}{{5.4}{9}{Feature Matching and Classification}{subsection.5.4}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.5}Threshold Sensitivity Analysis}{10}{subsection.5.5}\protected@file@percent }
-\newlabel{subsec:threshold-sensitivity}{{5.5}{10}{Threshold Sensitivity Analysis}{subsection.5.5}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.6}Targeted Analysis on Safety and Instruction Prompts}{10}{subsection.5.6}\protected@file@percent }
-\newlabel{subsec:targeted-analysis}{{5.6}{10}{Targeted Analysis on Safety and Instruction Prompts}{subsection.5.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.7}Automated Feature Labelling}{11}{subsection.5.7}\protected@file@percent }
-\newlabel{subsec:feature-labelling}{{5.7}{11}{Automated Feature Labelling}{subsection.5.7}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.8}Causal Verification via Activation Steering}{12}{subsection.5.8}\protected@file@percent }
-\newlabel{subsec:causal-verification}{{5.8}{12}{Causal Verification via Activation Steering}{subsection.5.8}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.9}Implementation Notes}{13}{subsection.5.9}\protected@file@percent }
-\newlabel{subsec:implementation-notes}{{5.9}{13}{Implementation Notes}{subsection.5.9}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {5.10}Assumptions, Limitations, and Scope}{13}{subsection.5.10}\protected@file@percent }
-\newlabel{subsec:assumptions-limitations}{{5.10}{13}{Assumptions, Limitations, and Scope}{subsection.5.10}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {6}Technical Content and Key Results}{14}{section.6}\protected@file@percent }
-\newlabel{sec:results}{{6}{14}{Technical Content and Key Results}{section.6}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.1}Macroscopic Picture (RQ1)}{14}{subsection.6.1}\protected@file@percent }
-\newlabel{subsec:rq1-results}{{6.1}{14}{Macroscopic Picture (RQ1)}{subsection.6.1}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.2}Labelling and Cross-Model Consensus}{15}{subsection.6.2}\protected@file@percent }
-\newlabel{subsec:labelling-results}{{6.2}{15}{Labelling and Cross-Model Consensus}{subsection.6.2}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.3}Targeted Differential Analysis (RQ2)}{15}{subsection.6.3}\protected@file@percent }
-\newlabel{subsec:rq2-results}{{6.3}{15}{Targeted Differential Analysis (RQ2)}{subsection.6.3}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {6.4}Causal Verification via Steering (RQ3)}{16}{subsection.6.4}\protected@file@percent }
-\newlabel{subsec:rq3-results}{{6.4}{16}{Causal Verification via Steering (RQ3)}{subsection.6.4}{}}
+\@input{sections/experiments.aux}
+\@input{sections/results.aux}
+\@input{sections/discussion.aux}
 \abx@aux@cite{0}{du_how_2025}
 \abx@aux@segm{0}{0}{du_how_2025}
 \abx@aux@cite{0}{du_how_2025}
 \abx@aux@segm{0}{0}{du_how_2025}
-\@writefile{toc}{\contentsline {section}{\numberline {7}Limitations and Robustness}{17}{section.7}\protected@file@percent }
-\newlabel{sec:limitations-robustness}{{7}{17}{Limitations and Robustness}{section.7}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {8}Conclusions, Implications, and Application to the Real World}{17}{section.8}\protected@file@percent }
-\newlabel{sec:conclusions}{{8}{17}{Conclusions, Implications, and Application to the Real World}{section.8}{}}
+\@input{sections/future_work.aux}
+\@input{sections/conclusions.aux}
+\@input{sections/appendix.aux}
 \abx@aux@cite{0}{elhage_toy_2022}
 \abx@aux@segm{0}{0}{elhage_toy_2022}
 \abx@aux@cite{0}{templeton_scaling_2024}
@@ -117,10 +75,6 @@
 \abx@aux@segm{0}{0}{zhou_lima_2023}
 \abx@aux@cite{0}{du_how_2025}
 \abx@aux@segm{0}{0}{du_how_2025}
-\@writefile{toc}{\contentsline {section}{\numberline {A}Literature Review Summary}{19}{appendix.A}\protected@file@percent }
-\newlabel{sec:appendix-literature-summary}{{A}{19}{Literature Review Summary}{appendix.A}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {B}Implications for the Present Study}{19}{appendix.B}\protected@file@percent }
-\newlabel{sec:appendix-literature-implications}{{B}{19}{Implications for the Present Study}{appendix.B}{}}
 \abx@aux@read@bbl@mdfivesum{B2999B1AC45E3D11BDE4F319D06F9772}
 \abx@aux@defaultrefcontext{0}{bricken_monosemanticity_2023}{nyt/global//global/global/global}
 \abx@aux@defaultrefcontext{0}{du_how_2025}{nyt/global//global/global/global}
@@ -138,4 +92,4 @@
 \abx@aux@defaultrefcontext{0}{xu_tracking_nodate}{nyt/global//global/global/global}
 \abx@aux@defaultrefcontext{0}{zhou_lima_2023}{nyt/global//global/global/global}
 \abx@aux@defaultrefcontext{0}{zou_universal_2023}{nyt/global//global/global/global}
-\gdef \@abspage@last{22}
+\gdef \@abspage@last{27}

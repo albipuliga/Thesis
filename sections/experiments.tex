@@ -1,0 +1,60 @@
+\pagestyle{fancy}
+
+\section{Experiments}
+
+\subsection{Targeted Analysis on Safety and Instruction Prompts}
+\label{subsec:targeted-analysis}
+
+To probe behaviourally relevant features, three labelled prompt sets are loaded:
+\begin{itemize}
+    \item JailbreakBench JBB-Behaviors, using 100 harmful and 100 benign prompts, for safety;
+    \item Stanford Alpaca, using 200 instructions, for instruction-following;
+    \item the TruthfulQA generation split, using 200 questions, as a complementary factual probe.
+\end{itemize}
+
+Each prompt is tokenised, passed through both PT and IT, and its mean per-feature activation at layer 13, averaged over non-BOS tokens, is recorded. For each group-versus-baseline comparison, Welch's $t$-test identifies the features with the largest standardised mean difference between the two groups, separately in PT and IT. The top 20 features per group per model are then cross-referenced against the matching results and bucketed into ``IT-exclusive,'' ``Has PT match,'' or ``No clear match,'' giving a direct test of RQ2.
+
+These results are persisted to \texttt{targeted\_analysis\_results.json} so that the steering stage can reuse the empirical mean activations for norm calibration.
+
+A methodological note is important here. The original draft proposed contrasting overtly benign and overtly harmful prompts. Pilot runs showed that this gives weak diagnostic signal, because the IT model's most differentially active features often fire on lexical cues such as ``how to,'' ``create,'' or ``make'' rather than on semantic harm. Near-boundary, ambiguously framed prompts would likely provide a stronger test, and this is treated as a limitation rather than ignored.
+
+\subsection{Automated Feature Labelling}
+\label{subsec:feature-labelling}
+
+For each feature category---preserved, modified, PT-exclusive, and IT-exclusive---50 features are sampled and labelled. For each selected feature, the 20 highest-activating sequences from the 5K-sequence FineWeb sample are collected, with activating tokens flagged using \texttt{>>>...<<<} markers. These examples are then sent in parallel to two LLMs.
+
+Claude Haiku 4.5 is queried through a structured-output schema that requests a free-text description, a categorical label from the set \{\texttt{language\_syntax}, \texttt{knowledge\_semantics}, \texttt{instruction\_style}, \texttt{safety\_alignment}, \texttt{formatting}, \texttt{other}\}, and a confidence rating from 1 to 5. GPT-4.1-nano is queried with the same schema and prompt. Outputs are saved separately to \texttt{feature\_labels\_claude.json} and \texttt{feature\_labels\_openai.json}.
+
+Inter-model agreement is computed per category and yields an overall rate of about 59.5\%. Agreement is highest for preserved features and degrades as features become more ambiguous, which is the expected pattern. The two annotators most often disagree on the boundary between \texttt{language\_syntax} and \texttt{instruction\_style}, suggesting that many instruction-following cues are realised through syntactic markers. A high-confidence consensus subset is then constructed by retaining only features for which both models report confidence at least 4. This consensus list is the subset used for downstream steering selection.
+
+Claude Haiku is preferred over a larger Anthropic model because the labelling task is essentially short-context pattern recognition, and pilot validation did not reveal a quality difference large enough to justify the cost increase.
+
+\subsection{Causal Verification via Activation Steering}
+\label{subsec:causal-verification}
+
+Three steering cases test the causal role of selected features:
+\begin{itemize}
+    \item \textbf{Case A: IT-exclusive features steered in the base model.} If post-training installs genuinely new safety- or instruction-relevant features, then injecting an IT-exclusive feature into the PT model should shift outputs in the direction predicted by its label. The selected candidates are features 241, 222, 2006, and 446.
+    \item \textbf{Case B: PT-exclusive features steered in the IT model.} If post-training suppresses pre-existing capabilities rather than removing them, then re-injecting a PT-exclusive feature into the IT model should re-surface the corresponding behaviour. The selected candidates are features 329 and 75.
+    \item \textbf{Case C: dose-response on modified features.} Two features classified as modified, 222 and 446, are steered across a finer multiplier grid in the IT model to characterise the relationship between intervention magnitude and behavioural change.
+\end{itemize}
+
+\textbf{Steering implementation.} A forward hook on layer 13 adds $\alpha \cdot \mathbf{d}_i$ to the residual stream during generation, where $\mathbf{d}_i$ is the SAE decoder column for feature $i$. Decoder directions are taken at their learned SAE scale rather than unit-normalised, because unit normalisation would discard empirically learned magnitude information and make $\alpha$ less interpretable across features.
+
+\textbf{Norm calibration of $\alpha$.} Pilot runs at a fixed $\alpha = 50$ produced almost no behavioural change because the residual-stream norms at layer 13 of Gemma 3 1B are large. Instead, $\alpha$ is parameterised relative to the empirical mean activation of the target feature, taken from the targeted analysis:
+\[
+    \alpha = m \times \text{mean\_act},
+\]
+with multipliers $m \in \{-5, -3, -1, 0, 1, 3, 5, 10\}$ for Cases A and B, and $m \in \{-10, -5, -3, -1, 0, 1, 3, 5, 10, 20\}$ for Case C. This makes the intervention interpretable as a multiple of the feature's natural firing strength.
+
+\textbf{Evaluation.} Two evaluation metrics are used:
+\begin{enumerate}
+    \item KL divergence between the next-token distributions of steered and unsteered generations at the final prompt position;
+    \item qualitative text-change classification, where steered and unsteered 60-token generations are compared as strings and tagged either \texttt{CHANGED} or \texttt{same}.
+\end{enumerate}
+Each feature is tested across nine prompts spanning instruction, safety, and neutral settings for Cases A and B, and across three prompts for Case C.
+
+\subsection{Implementation Notes}
+\label{subsec:implementation-notes}
+
+All experiments are conducted in Python in a Jupyter notebook on a single GPU with roughly 79 GB VRAM. Models are loaded in \texttt{bfloat16}; SAE encoding runs in float32 to match Gemma Scope training precision. The random seed is fixed at 42 for sampling and prompt ordering. SAELens is used for SAE loading and steering hooks, the Anthropic Python SDK for structured Claude outputs, and OpenAI's official client for GPT-4.1-nano labelling. Intermediate artefacts---classification masks, labels from both annotators, the consensus list, the targeted analysis JSON, and the steering results JSON---are all written to disk so that later stages can be rerun independently.

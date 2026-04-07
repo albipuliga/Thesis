@@ -2,6 +2,7 @@
 \usepackage[utf8]{inputenc}
 \usepackage{mathptmx}
 \usepackage{geometry}
+\usepackage{siunitx}
 \usepackage{appendix}
 \usepackage{pdfpages}
 \usepackage{amsmath, amsthm, amssymb}
@@ -19,22 +20,30 @@
 \usepackage{fancyhdr}
 \setlength{\headheight}{14.5pt}
 \pagestyle{fancy}
-\fancyhead[L]{Capstone Thesis}
+\fancyhead[L]{Post-Training Representations}
 \fancyhead[R]{\thepage}
 \fancyfoot{}
 \renewcommand{\headrulewidth}{0pt}
 
-\graphicspath{{./}}
+\graphicspath{{./}{./graphics/}}
 
 \begin{document}
 
-\input{methodology-chapter.tex}
-
+\pagenumbering{gobble}
+\input{sections/title_page}
 \clearpage
-\appendix
-\input{appendix.tex}
-
+\pagenumbering{arabic}
+\input{sections/abstract}
 \clearpage
+\include{sections/introduction}
+\include{sections/methodology}
+\include{sections/experiments}
+\include{sections/results}
+\include{sections/discussion}
+\include{sections/future_work}
+\include{sections/conclusions}
+\include{sections/appendix}
+
 \printbibliography
 
 \end{document}

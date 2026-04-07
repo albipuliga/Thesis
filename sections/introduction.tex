@@ -1,0 +1,52 @@
+\pagestyle{fancy}
+
+\section{Introduction}
+
+\subsection{Problem and Motivation}
+\label{sec:problem-motivation}
+
+Modern instruction-tuned LLMs are released as monolithic black boxes, but they are assembled in two distinct stages. Pre-training, which absorbs very large web-scale corpora, builds the model's broad linguistic and world knowledge. Post-training---typically supervised fine-tuning on demonstration data followed by RLHF or DPO---runs for a tiny fraction of that compute and yet is responsible for almost everything users care about: instruction-following, helpful tone, refusal of harmful requests, and conversational format \parencite{ouyang_training_2022, rafailov_direct_2024}.
+
+That disproportion between cost and effect is suspicious. \textcite{jain_mechanistically_2024} coined the ``wrapper hypothesis'' to describe one possible explanation: rather than installing genuinely new circuitry, post-training learns a thin wrapper that re-routes and amplifies capabilities the base model already possessed. Sleeper-agent results, the brittleness of refusal behaviour under jailbreaks, and the ease with which fine-tuning can undo safety training all point in the same direction \parencite{hubinger_sleeper_2024, zou_universal_2023}: alignment may be a shallow, removable layer rather than a deep rewrite.
+
+If the wrapper hypothesis is correct, it has direct consequences for AI safety research. Activation steering and feature ablation techniques that aim to make models safer by manipulating ``safety features'' rest on the implicit assumption that such features exist as discrete, post-training-introduced objects. If, instead, safety behaviour is implemented by modulating features that pre-training already learned, then the same interventions need to target modulation patterns rather than feature presence, and red-teaming has to assume that capabilities are never truly removed, only down-weighted.
+
+Despite its importance, the wrapper hypothesis has mostly been tested indirectly through behavioural probing, linear-probe comparisons, or activation-norm studies. None of these operate at the level of interpretable units of computation. Sparse Autoencoders, which decompose dense activations into sparse, monosemantic features, finally make it possible to ask the question at the right granularity: do the conceptual vocabularies of the base and instruction-tuned model differ, and if so how?
+
+The motivation for this thesis is to take that question seriously and answer it for one publicly available model pair where every ingredient---base checkpoint, IT checkpoint, and pre-trained SAEs for both---already exists as an open release.
+
+\subsection{Prior Art and Research Question}
+\label{sec:prior-art}
+
+Three intersecting lines of work inform this study.
+
+\textbf{Mechanistic interpretability and SAEs.} The line from early circuits work through the superposition literature and the Anthropic dictionary-learning agenda established SAEs as the leading tool for recovering monosemantic features from polysemantic neurons \parencite{elhage_toy_2022, bricken_monosemanticity_2023}. JumpReLU SAEs addressed shrinkage problems in earlier $L_1$-penalised variants \parencite{rajamanoharan_improving_2024}, and Gemma Scope released pre-trained SAEs for Gemma-family models, removing the need for researchers to train their own from scratch \parencite{lieberum_gemma_2024}. SAEBench then provided standardised quality metrics for evaluating SAE quality \parencite{karvonen_saebench_2025}. Cross-model SAE comparison, however, remains comparatively under-tooled.
+
+\textbf{Post-training mechanics.} InstructGPT and DPO established the now-standard SFT plus preference-optimisation pipeline \parencite{ouyang_training_2022, rafailov_direct_2024}. Mechanistic work suggests that post-training reshapes refusal, truthfulness, and confidence without looking like a wholesale rewrite of the model's internal machinery \parencite{du_how_2025}. \textcite{jain_mechanistically_2024} made the wrapper hypothesis explicit on procedurally defined tasks, while \textcite{xu_tracking_nodate} tracked feature dynamics across pre-training itself. Crosscoders and later work on feature attribution offer an alternative methodology that jointly trains a shared dictionary across model pairs \parencite{lindsey_crosscoders_2024, minder_crosscoder_2025}, but no public PT-vs-IT crosscoder for Gemma 3 is currently available.
+
+\textbf{Safety features and steering.} \textcite{templeton_scaling_2024} showed that interpretable features in production models include refusal- and deception-related directions, and that steering them produces predictable behavioural changes. This result underpins much of the alignment-by-interpretation programme. What that programme has not yet pinned down is whether these features are post-training artefacts or pre-existing structures that post-training merely highlights.
+
+\textbf{The gap.} No published work, to the best of this thesis's search process, takes a publicly available paired base/IT model release and runs the full SAE-comparison pipeline---match, classify, label, and causally verify---to test the wrapper hypothesis at the level of individual features. Gemma 3 1B plus Gemma Scope 2 makes this finally tractable on a student-budget compute envelope.
+
+\textbf{Research question.} Does instruction tuning of Gemma 3 1B introduce qualitatively new features into the model's residual-stream representations at layer 13, or does it predominantly reorganise and re-weight features that already exist in the pre-trained base?
+
+This question is operationalised through three sub-questions:
+\begin{itemize}
+    \item RQ1: What proportion of features at layer 13 of Gemma 3 1B are preserved, modified, PT-exclusive, or IT-exclusive between the base and IT checkpoints, and how robust is that proportion to the choice of matching thresholds?
+    \item RQ2: When the IT model is probed with safety-relevant and instruction-following prompts, do the most differentially active features map onto IT-exclusive entries, as a strict-creation reading would predict, or onto features that the matching pipeline already paired with a PT counterpart?
+    \item RQ3: Does causal manipulation via activation steering of the features identified in RQ2 produce the behavioural changes that their labels predict, in both the base and IT models?
+\end{itemize}
+
+\subsection{Main Contribution}
+\label{sec:main-contribution}
+
+In one sentence, this thesis provides an end-to-end empirical test of the wrapper hypothesis on a publicly available paired base/IT release using Sparse Autoencoders, and finds evidence that post-training of Gemma 3 1B at layer 13 reorganises pre-existing features rather than installing new ones.
+
+The deliverables of that contribution are:
+\begin{enumerate}
+    \item A reproducible pipeline (\texttt{Capstone\_Gemma\_3.ipynb}) that, starting from the published Gemma 3 1B checkpoints and the Gemma Scope 2 SAE release, performs activation collection, dual-direction feature matching, four-way classification, threshold sensitivity analysis, dual-LLM consensus labelling, targeted differential analysis on safety and instruction prompts, and norm-calibrated activation steering.
+    \item A characterisation of Gemma 3 1B layer-13 feature reorganisation across a $5 \times 5$ grid of matching thresholds, showing that the modified category dominates regardless of threshold choice.
+    \item A cross-LLM consensus labelling protocol, using Claude Haiku 4.5 and GPT-4.1-nano, that yields a 59.5\% inter-model agreement rate and exposes systematic confusions that a single-annotator pipeline would miss.
+    \item A targeted analysis on JailbreakBench, Stanford Alpaca, and TruthfulQA showing that the majority of safety- and instruction-differential IT features identified by Welch's $t$-test have a PT match rather than being IT-exclusive.
+    \item Causal verification via norm-calibrated activation steering on six selected features plus dose-response curves on two modified features, showing graded behavioural changes consistent with the wrapper reading.
+\end{enumerate}

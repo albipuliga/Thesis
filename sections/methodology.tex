@@ -1,0 +1,97 @@
+\pagestyle{fancy}
+
+\section{Methodology}
+\label{sec:methodology}
+
+This chapter describes the experimental design as it was actually implemented. It corrects the original draft on three points---model family (Gemma 3 1B, not Gemma 2 2B), analytical scope (single layer rather than all 26 layers), and the labelling and steering protocols---and presents only the parts of the pipeline that were executed end-to-end.
+
+\subsection{Experimental Overview and Research Design}
+\label{subsec:experimental-overview}
+
+The experiment is comparative and observational. Two publicly available checkpoints, \texttt{google/gemma-3-1b-pt} and \texttt{google/gemma-3-1b-it}, share architecture and pre-training and differ only in whether post-training was applied. Holding everything else constant, any systematic difference in their feature representations can therefore be attributed to post-training.
+
+The analysis is restricted to a single transformer layer: layer 13 of 26, at the residual stream. This is a deliberate scope reduction relative to the original methodology draft. Prior work consistently places much of the post-training-relevant change in mid-to-late layers \parencite{du_how_2025}, and concentrating compute on one layer makes the dual-LLM labelling and steering experiments tractable on a single GPU. Generalisation across layers is left as future work.
+
+The pipeline proceeds in five stages:
+\begin{enumerate}
+    \item activation collection on a shared FineWeb sample;
+    \item SAE encoding with Gemma Scope 2 SAEs, using separate dictionaries for PT and IT;
+    \item feature matching by decoder cosine similarity and activation correlation, followed by four-way classification;
+    \item targeted differential analysis on safety and instruction prompts plus dual-LLM consensus labelling;
+    \item causal verification by norm-calibrated activation steering.
+\end{enumerate}
+
+The three pipeline figures from the original draft remain conceptually valid once ``Gemma 2 2B'' is replaced by ``Gemma 3 1B'' and the analysis is understood as being fixed to layer 13.
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{Diagram 1 - Data & Activation Collection.png}
+    \caption{Data and activation collection pipeline. Identical FineWeb sequences are processed by both the PT and IT variants of Gemma 3 1B, and the residual stream at layer 13 is decomposed into sparse feature vectors by the corresponding Gemma Scope 2 SAEs.}
+    \label{fig:data-activation-collection}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{Diagram 2 - Feature Comparison.png}
+    \caption{Feature comparison pipeline. Layer-13 sparse feature vectors and decoder matrices from both models are matched across PT and IT, then classified into preserved, modified, PT-exclusive, and IT-exclusive categories before targeted analysis and labelling.}
+    \label{fig:feature-comparison}
+\end{figure}
+
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=\textwidth]{Diagram 3 - Validation & Results.png}
+    \caption{Validation and results pipeline. Categorised features feed into threshold sensitivity analysis, targeted safety and instruction probing, and causal verification through activation steering, converging on an empirical test of the wrapper hypothesis.}
+    \label{fig:validation-results}
+\end{figure}
+
+\subsection{Models and SAEs}
+\label{subsec:models-saes}
+
+\textbf{Models.} Gemma 3 1B is treated here as a dense decoder-only transformer with 26 layers and a hidden dimension of 1152. The base variant, \texttt{gemma-3-1b-pt}, is pre-trained only; the instruction-tuned variant, \texttt{gemma-3-1b-it}, shares the same backbone but has additionally undergone Google's standard post-training pipeline. Both models are loaded in \texttt{bfloat16}. Earlier tests with \texttt{float16} produced NaN activations at layer 13 due to overflow, which the larger dynamic range of \texttt{bfloat16} avoids.
+
+\textbf{SAEs.} Both PT and IT models use the corresponding Gemma Scope 2 residual-stream SAEs at layer 13, with release strings \texttt{gemma-scope-2-1b-pt-res} and \texttt{gemma-scope-2-1b-it-res}, and SAE id \texttt{layer\_13\_width\_16k\_l0\_medium}. These are JumpReLU SAEs with a dictionary width of 16,384 features, approximately 14 times the model hidden dimension, trained independently on activations from each model variant \parencite{rajamanoharan_improving_2024, lieberum_gemma_2024}. That independence is necessary for comparison, but it also means that the same underlying concept can be decomposed into different dictionary elements in the two models, which is precisely why the matching procedure uses two complementary criteria.
+
+On the FineWeb sample used here, the PT SAE has mean FVU 0.066, mean $L_0 \approx 61.4$, and 8,142 features active on more than 0.1\% of tokens. The IT SAE has mean FVU 0.124, mean $L_0 \approx 65.1$, and 4,828 features active on more than 0.1\% of tokens. The higher FVU and smaller pool of live features in the IT SAE is itself interpreted as a substantive result: post-training appears to narrow the effective feature inventory at this layer, concentrating activation mass on fewer dictionary elements.
+
+\subsection{Data and Activation Collection}
+\label{subsec:data-activation}
+
+\textbf{Corpus.} A random sample of 5,000 sequences from FineWeb is drawn, each truncated to 256 tokens. Sequences shorter than 256 tokens are discarded rather than padded. This yields 1,275,000 valid activation positions once the first BOS token is dropped from each sequence. The sample size is reduced from the 50,000 sequences proposed in the original draft because the dual-LLM labelling and steering stages added compute requirements that were not part of the original scope, and threshold sensitivity analysis showed that the qualitative results stabilise well within a 5K-sequence sample.
+
+\textbf{Tokenisation.} The Gemma 3 tokenizer is shared across PT and IT, so identical text produces identical token sequences in both models. Prompts are passed as raw text without applying the IT chat template, since doing so would introduce special tokens the base model has never seen and would confound the comparison.
+
+\textbf{Activation extraction.} A forward hook on \texttt{model.model.layers[13]} captures the residual-stream output for every position in every sequence. Because the SAE is trained on float32 activations, hidden states are cast back from \texttt{bfloat16} to float32 before encoding. To stay within the VRAM budget, activations are moved to CPU after extraction and then streamed back to GPU in chunks of 64 tokens for SAE encoding, while running sums are accumulated incrementally rather than storing the full activation tensor.
+
+\subsection{Feature Matching and Classification}
+\label{subsec:feature-matching}
+
+\textbf{Decoder-direction similarity.} Both decoder matrices are $L_2$-normalised along the feature dimension. For each PT feature $i$, the cosine similarity to every IT decoder direction $j$ is computed in chunks of 1,024 features, and the highest-similarity IT counterpart is recorded. The same is done in the reverse direction because the matching is not assumed to be symmetric. The aggregate Mean Maximum Cosine Similarity values are 0.634 for PT$\rightarrow$IT and 0.626 for IT$\rightarrow$PT. These are moderate values and well below the level one would expect under strict feature preservation.
+
+\textbf{Activation correlation.} For each best-match pair, the Pearson correlation between the two features' per-sequence mean activation vectors of length 5,000 is computed. Per-sequence rather than per-token activations are used because storing full per-token vectors would exceed the available memory budget and because downstream labelling and targeted analysis also operate on per-sequence means. Mean activation correlation is 0.150, with median 0.006, indicating that the bulk of features show low cross-model agreement on firing pattern even when their geometric directions are similar.
+
+\textbf{Classification.} A feature is classified as \textit{preserved} when both criteria exceed their thresholds, \textit{modified} when exactly one does, \textit{PT-exclusive} when neither holds from the PT side, and \textit{IT-exclusive} when neither holds from the IT side. Only features active on at least 0.1\% of tokens enter the counts, so dead features are excluded. The primary thresholds adopted for downstream analysis are $\tau_d = 0.7$ and $\tau_a = 0.3$, yielding 241 preserved features (3.0\% of active PT), 4,017 modified (49.3\%), 3,884 PT-exclusive (47.7\%), and 1,899 IT-exclusive (39.3\% of active IT). Under the stricter literature-style thresholds $\tau_d = 0.8$ and $\tau_a = 0.7$, the preserved category collapses to only 34 features, which makes threshold choice a central methodological issue rather than a minor implementation detail.
+
+\subsection{Threshold Sensitivity Analysis}
+\label{subsec:threshold-sensitivity}
+
+To check whether the qualitative picture is robust, the four-way classification is recomputed on a $5 \times 5$ grid of threshold values:
+\[
+    \tau_d \in \{0.5, 0.6, 0.7, 0.8, 0.9\}, \qquad
+    \tau_a \in \{0.1, 0.2, 0.3, 0.5, 0.7\}.
+\]
+Across this entire grid, the modified category exceeds 30\% of active PT features in every setting and the preserved category remains small throughout. The wrapper-hypothesis-friendly reading---that most features have a recognisable counterpart but fire differently---is therefore not a threshold artefact.
+
+\subsection{Assumptions, Limitations, and Scope}
+\label{subsec:assumptions-limitations}
+
+The methodology rests on the linear representation hypothesis and on the adequacy of Gemma Scope 2 SAEs as a feature extractor. Both are tested only indirectly: the former through the coherence of automated labels and the latter through reported FVU values. The main limitations are as follows.
+
+\begin{itemize}
+    \item \textbf{Single layer, single model pair, single scale.} Findings are valid for layer 13 of Gemma 3 1B with the 16K-width Gemma Scope 2 SAEs and need not generalise to other layers, larger Gemma variants, or other architectures.
+    \item \textbf{Reduced sample size.} The study uses 5K FineWeb sequences rather than the 50K proposed in the original draft. Threshold sensitivity is robust within this sample, but rare-feature statistics are necessarily weaker.
+    \item \textbf{Per-sequence rather than per-token correlation.} Activation correlation is computed on per-sequence mean activations to fit in memory, which can under-count features that match locally but not globally.
+    \item \textbf{Raw decoder norms in steering.} Steering uses raw, not unit-normalised, decoder directions. This preserves learned SAE scale but requires the multiplier-by-mean-activation calibration to keep interventions interpretable.
+    \item \textbf{KL at a single position.} Variable generation lengths under steering make a full-generation KL window ill-defined, so KL is reported only at the final prompt token.
+    \item \textbf{Prompt selection.} The targeted prompts are categorical contrasts rather than near-boundary probes. A stronger safety diagnosis would likely come from more ambiguous prompts.
+    \item \textbf{Crosscoders are out of scope.} A PT-vs-IT crosscoder for Gemma 3 would eliminate post-hoc matching entirely, but currently published Gemma Scope crosscoders are cross-layer rather than cross-model, so that extension is left for future work.
+\end{itemize}
