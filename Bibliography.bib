@@ -136,23 +136,27 @@
 	date = {2020-03-10},
 }
 
-@online{noauthor_how_nodate,
-	title = {How Post-Training Reshapes {LLMs}: A Mechanistic View on Knowledge, Truthfulness, Refusal, and Confidence},
-	url = {https://arxiv.org/html/2504.02904v2},
-	urldate = {2026},
-	file = {How Post-Training Reshapes LLMs\: A Mechanistic View on Knowledge, Truthfulness, Refusal, and Confidence:/Users/albertopuliga/Zotero/storage/WUIZKZZE/2504.html:text/html},
-}
-
-@online{xu_tracking_nodate,
+@misc{xu_tracking_nodate,
 	title = {Tracking the Feature Dynamics in {LLM} Training: A Mechanistic Study},
-	url = {https://arxiv.org/abs/2412.17626v3},
+	url = {https://arxiv.org/abs/2412.17626},
 	shorttitle = {Tracking the Feature Dynamics in {LLM} Training},
 	abstract = {Understanding training dynamics and feature evolution is crucial for the mechanistic interpretability of large language models ({LLMs}). Although sparse autoencoders ({SAEs}) have been used to identify features within {LLMs}, a clear picture of how these features evolve during training remains elusive. In this study, we (1) introduce {SAE}-Track, a novel method for efficiently obtaining a continual series of {SAEs}, providing the foundation for a mechanistic study that covers (2) the semantic evolution of features, (3) the underlying processes of feature formation, and (4) the directional drift of feature vectors. Our work provides new insights into the dynamics of features in {LLMs}, enhancing our understanding of training mechanisms and feature evolution. For reproducibility, our code is available at https://github.com/Superposition09m/{SAE}-Track.},
-	titleaddon = {{arXiv}.org},
 	author = {Xu, Yang and Wang, Yi and Huang, Hengguan and Wang, Hao},
 	urldate = {2026},
+	year = {2025},
+	eprint = {2412.17626},
+	archivePrefix = {arXiv},
+	primaryClass = {cs.LG},
 	langid = {english},
 	file = {Full Text PDF:/Users/albertopuliga/Zotero/storage/RX42APEM/Xu et al. - Tracking the Feature Dynamics in LLM Training A Mechanistic Study.pdf:application/pdf},
+}
+
+@misc{taori_stanford_alpaca_2023,
+	title = {Stanford Alpaca},
+	url = {https://github.com/tatsu-lab/stanford_alpaca},
+	author = {Taori, Rohan and Gulrajani, Ishaan and Zhang, Tianyi and Dubois, Yann and Li, Xuechen and Guestrin, Carlos and Liang, Percy and Hashimoto, Tatsunori B.},
+	year = {2023},
+	note = {Instruction-following dataset repository},
 }
 
 @misc{peng_use_2025,
@@ -416,23 +420,6 @@
 	file = {Preprint PDF:/Users/albertopuliga/Zotero/storage/YIP5HX2B/Meng et al. - 2023 - Locating and Editing Factual Associations in GPT.pdf:application/pdf},
 }
 
-@misc{vaswani_attention_2023,
-	title = {Attention Is All You Need},
-	url = {http://arxiv.org/abs/1706.03762},
-	doi = {10.48550/arXiv.1706.03762},
-	abstract = {The dominant sequence transduction models are based on complex recurrent or convolutional neural networks in an encoder-decoder configuration. The best performing models also connect the encoder and decoder through an attention mechanism. We propose a new simple network architecture, the Transformer, based solely on attention mechanisms, dispensing with recurrence and convolutions entirely. Experiments on two machine translation tasks show these models to be superior in quality while being more parallelizable and requiring significantly less time to train. Our model achieves 28.4 {BLEU} on the {WMT} 2014 English-to-German translation task, improving over the existing best results, including ensembles by over 2 {BLEU}. On the {WMT} 2014 English-to-French translation task, our model establishes a new single-model state-of-the-art {BLEU} score of 41.8 after training for 3.5 days on eight {GPUs}, a small fraction of the training costs of the best models from the literature. We show that the Transformer generalizes well to other tasks by applying it successfully to English constituency parsing both with large and limited training data.},
-	number = {{arXiv}:1706.03762},
-	publisher = {{arXiv}},
-	author = {Vaswani, Ashish and Shazeer, Noam and Parmar, Niki and Uszkoreit, Jakob and Jones, Llion and Gomez, Aidan N. and Kaiser, Lukasz and Polosukhin, Illia},
-	urldate = {2026},
-	year = {2023},
-	date = {2023-08-02},
-	eprinttype = {arxiv},
-	eprint = {1706.03762 [cs]},
-	keywords = {Computer Science - Machine Learning, Computer Science - Computation and Language},
-	file = {Preprint PDF:/Users/albertopuliga/Zotero/storage/BH5L69GV/Vaswani et al. - 2023 - Attention Is All You Need.pdf:application/pdf;Snapshot:/Users/albertopuliga/Zotero/storage/J83QMRPE/1706.html:text/html},
-}
-
 @misc{wang_interpretability_2022,
 	title = {Interpretability in the Wild: a Circuit for Indirect Object Identification in {GPT}-2 small},
 	url = {http://arxiv.org/abs/2211.00593},
@@ -537,40 +524,6 @@
 	file = {Full Text PDF:/Users/albertopuliga/Zotero/storage/HZHW4CCX/Geva et al. - 2021 - Transformer Feed-Forward Layers Are Key-Value Memories.pdf:application/pdf},
 }
 
-@misc{geva_transformer_2021-1,
-	title = {Transformer Feed-Forward Layers Are Key-Value Memories},
-	url = {http://arxiv.org/abs/2012.14913},
-	doi = {10.48550/arXiv.2012.14913},
-	abstract = {Feed-forward layers constitute two-thirds of a transformer model's parameters, yet their role in the network remains under-explored. We show that feed-forward layers in transformer-based language models operate as key-value memories, where each key correlates with textual patterns in the training examples, and each value induces a distribution over the output vocabulary. Our experiments show that the learned patterns are human-interpretable, and that lower layers tend to capture shallow patterns, while upper layers learn more semantic ones. The values complement the keys' input patterns by inducing output distributions that concentrate probability mass on tokens likely to appear immediately after each pattern, particularly in the upper layers. Finally, we demonstrate that the output of a feed-forward layer is a composition of its memories, which is subsequently refined throughout the model's layers via residual connections to produce the final output distribution.},
-	number = {{arXiv}:2012.14913},
-	publisher = {{arXiv}},
-	author = {Geva, Mor and Schuster, Roei and Berant, Jonathan and Levy, Omer},
-	urldate = {2026},
-	year = {2021},
-	date = {2021-09-05},
-	eprinttype = {arxiv},
-	eprint = {2012.14913 [cs]},
-	keywords = {Computer Science - Computation and Language},
-	file = {Preprint PDF:/Users/albertopuliga/Zotero/storage/R4DHL56M/Geva et al. - 2021 - Transformer Feed-Forward Layers Are Key-Value Memories.pdf:application/pdf;Snapshot:/Users/albertopuliga/Zotero/storage/Q3FM2WX6/2012.html:text/html},
-}
-
-@misc{dai_knowledge_2022,
-	title = {Knowledge Neurons in Pretrained Transformers},
-	url = {http://arxiv.org/abs/2104.08696},
-	doi = {10.48550/arXiv.2104.08696},
-	abstract = {Large-scale pretrained language models are surprisingly good at recalling factual knowledge presented in the training corpus. In this paper, we present preliminary studies on how factual knowledge is stored in pretrained Transformers by introducing the concept of knowledge neurons. Specifically, we examine the fill-in-the-blank cloze task for {BERT}. Given a relational fact, we propose a knowledge attribution method to identify the neurons that express the fact. We find that the activation of such knowledge neurons is positively correlated to the expression of their corresponding facts. In our case studies, we attempt to leverage knowledge neurons to edit (such as update, and erase) specific factual knowledge without fine-tuning. Our results shed light on understanding the storage of knowledge within pretrained Transformers. The code is available at https://github.com/Hunter-{DDM}/knowledge-neurons.},
-	number = {{arXiv}:2104.08696},
-	publisher = {{arXiv}},
-	author = {Dai, Damai and Dong, Li and Hao, Yaru and Sui, Zhifang and Chang, Baobao and Wei, Furu},
-	urldate = {2026},
-	year = {2022},
-	date = {2022-03-10},
-	eprinttype = {arxiv},
-	eprint = {2104.08696 [cs]},
-	keywords = {Computer Science - Computation and Language},
-	file = {Preprint PDF:/Users/albertopuliga/Zotero/storage/2HBZPLR6/Dai et al. - 2022 - Knowledge Neurons in Pretrained Transformers.pdf:application/pdf;Snapshot:/Users/albertopuliga/Zotero/storage/W5UXUL33/2104.html:text/html},
-}
-
 @misc{du_how_2025,
 	title = {How Post-Training Reshapes {LLMs}: A Mechanistic View on Knowledge, Truthfulness, Refusal, and Confidence},
 	url = {http://arxiv.org/abs/2504.02904},
@@ -608,33 +561,6 @@
 	file = {Preprint PDF:/Users/albertopuliga/Zotero/storage/7G4T9E9B/Lieberum et al. - 2024 - Gemma Scope Open Sparse Autoencoders Everywhere All At Once on Gemma 2.pdf:application/pdf;Snapshot:/Users/albertopuliga/Zotero/storage/M3R8GVPS/2408.html:text/html},
 }
 
-@inproceedings{smith_analysis_2022,
-	location = {New York, {NY}},
-	title = {An Analysis of Example},
-	volume = {1},
-	series = {Example Conference Proceedings},
-	pages = {123--130},
-	number = {2},
-	booktitle = {Proceedings of the International Conference on Example},
-	publisher = {{ACM} Press},
-	author = {Smith, John and Doe, Jane},
-	editor = {Brown, David and Green, Susan},
-	year = {2022},
-	note = {Backup Publisher: {ACM}},
-}
-
-@misc{gemma_team_2024,
-	title = {Gemma 2: Improving Open Language Models at a Practical Size},
-	url = {http://arxiv.org/abs/2408.00118},
-	doi = {10.48550/arXiv.2408.00118},
-	number = {{arXiv}:2408.00118},
-	publisher = {{arXiv}},
-	author = {{Gemma Team} and Riviere, Morgane and Pathak, Shreya and Sessa, Pier Giuseppe and Hardin, Cassidy and Bhupatiraju, Surya and Hussenot, L\'{e}onard and Mesnard, Thomas and Shahriari, Bobak and Ram\'{e}, Alexandre and others},
-	year = {2024},
-	eprinttype = {arxiv},
-	eprint = {2408.00118 [cs]},
-}
-
 @misc{templeton_scaling_2024,
 	title = {Scaling Monosemanticity: Extracting Interpretable Features from Claude 3 Sonnet},
 	url = {https://transformer-circuits.pub/2024/scaling-monosemanticity/},
@@ -654,13 +580,6 @@
 	eprint = {2406.17557 [cs]},
 }
 
-@misc{li_alpacaeval_2023,
-	title = {{AlpacaEval}: An Automatic Evaluator of Instruction-Following Models},
-	url = {https://github.com/tatsu-lab/alpaca_eval},
-	author = {Li, Xuechen and Zhang, Tianyi and Dubois, Yann and Taori, Rohan and Gulrajani, Ishaan and Guestrin, Carlos and Liang, Percy and Hashimoto, Tatsunori B.},
-	year = {2023},
-}
-
 @misc{lin_truthfulqa_2022,
 	title = {{TruthfulQA}: Measuring How Models Mimic Human Falsehoods},
 	url = {http://arxiv.org/abs/2109.07958},
@@ -673,20 +592,6 @@
 	eprint = {2109.07958 [cs]},
 }
 
-@misc{nanda_transformerlens_2022,
-	title = {{TransformerLens}},
-	url = {https://github.com/TransformerLensOrg/TransformerLens},
-	author = {Nanda, Neel and Bloom, Joseph},
-	year = {2022},
-}
-
-@misc{bills_language_2023,
-	title = {Language models can explain neurons in language models},
-	url = {https://openaipublic.blob.core.windows.net/neuron-explainer/paper/index.html},
-	author = {Bills, Steven and Cammarata, Nick and Mossing, Dan and Tillman, Henk and Gao, Leo and Goh, Gabriel and Sutskever, Ilya and Leike, Jan and Wu, Jeff and Saunders, William},
-	year = {2023},
-}
-
 @misc{bricken_monosemanticity_2023,
 	title = {Towards Monosemanticity: Decomposing Language Models With Dictionary Learning},
 	url = {https://transformer-circuits.pub/2023/monosemantic-features/},
@@ -694,43 +599,46 @@
 	year = {2023},
 }
 
-@misc{lindsey_crosscoders_2024,
-	title = {Crosscoders},
-	url = {https://transformer-circuits.pub/2024/crosscoders/index.html},
-	author = {Lindsey, Jack and Templeton, Adly and Marcus, Jonathan and Conerly, Tom and Batson, Joshua and Olah, Chris},
-	year = {2024},
-}
-
-@misc{dfc_2025,
-	title = {Dedicated Feature Crosscoders},
-	url = {https://openreview.net/forum?id=dedicated-feature-crosscoders},
-	author = {{Anonymous}},
-	year = {2025},
-	note = {OpenReview preprint},
-}
-
-@misc{minder_crosscoder_2025,
-	title = {On Feature Attributions in Crosscoders},
-	url = {http://arxiv.org/abs/2502.01819},
-	doi = {10.48550/arXiv.2502.01819},
-	number = {{arXiv}:2502.01819},
+@misc{chao_jailbreakbench_2024,
+	title = {JailbreakBench: An Open Robustness Benchmark for Jailbreaking Large Language Models},
+	url = {http://arxiv.org/abs/2404.01318},
+	doi = {10.48550/arXiv.2404.01318},
+	number = {{arXiv}:2404.01318},
 	publisher = {{arXiv}},
-	author = {Minder, Jonas and Karvonen, Adam and Conmy, Arthur and Nanda, Neel},
-	year = {2025},
+	author = {Chao, Patrick and Debenedetti, Edoardo and Robey, Alexander and Andriushchenko, Maksym and Croce, Francesco and Sehwag, Vikash and Dobriban, Edgar and Flammarion, Nicolas and Pappas, George J. and Tramer, Florian and Hassani, Hamed and Wong, Eric},
+	year = {2024},
+	date = {2024-03-28},
 	eprinttype = {arxiv},
-	eprint = {2502.01819 [cs]},
+	eprint = {2404.01318 [cs.CR]},
 }
 
-@misc{ge_lmsaes_2024,
-	title = {Language-Model-{SAEs}: A Framework for Training and Evaluating Sparse Autoencoders},
-	url = {https://github.com/OpenMOSS/Language-Model-SAEs},
-	author = {Ge, Xuyang and others},
-	year = {2024},
+@article{welch_generalization_1947,
+	title = {The Generalization of ``Student's'' Problem When Several Different Population Variances Are Involved},
+	journaltitle = {Biometrika},
+	volume = {34},
+	number = {1-2},
+	pages = {28--35},
+	doi = {10.1093/biomet/34.1-2.28},
+	url = {https://doi.org/10.1093/biomet/34.1-2.28},
+	author = {Welch, B. L.},
+	year = {1947},
+	date = {1947-01-01},
 }
 
-@misc{bloom_saelens_2024,
-	title = {{SAELens}: {SAE} Training and Analysis Library},
-	url = {https://github.com/jbloomAus/SAELens},
-	author = {Bloom, Joseph and Chanin, David and Karvonen, Adam and Rajamanoharan, Senthooran},
+@online{anthropic_haiku_2025,
+	title = {Claude Haiku 4.5},
+	url = {https://www.anthropic.com/claude/haiku},
+	author = {{Anthropic}},
+	year = {2025},
+	date = {2025-01-01},
+}
+
+@misc{jain2024makesbreakssafetyfinetuning,
+	title = {What Makes and Breaks Safety Fine-tuning? A Mechanistic Study},
+	author = {Samyak Jain and Ekdeep Singh Lubana and Kemal Oksuz and Tom Joy and Philip H. S. Torr and Amartya Sanyal and Puneet K. Dokania},
 	year = {2024},
+	eprint = {2407.10264},
+	archivePrefix = {arXiv},
+	primaryClass = {cs.LG},
+	url = {https://arxiv.org/abs/2407.10264},
 }
