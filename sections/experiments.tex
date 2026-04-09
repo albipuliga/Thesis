@@ -5,7 +5,7 @@
 \subsection{Targeted Analysis on Safety and Instruction Prompts}
 \label{subsec:targeted-analysis}
 
-To probe behaviourally relevant features, three labelled prompt sets are loaded:
+Three labelled prompt sets are used to probe behaviourally relevant features:
 \begin{itemize}
     \item JailbreakBench JBB-Behaviors, using 100 harmful and 100 benign prompts, for safety;
     \item Stanford Alpaca \parencite{taori_stanford_alpaca_2023}, using 200 instructions, for instruction-following;
@@ -16,18 +16,18 @@ Each prompt is tokenised, passed through both PT and IT, and its mean per-featur
 
 These results are persisted to \texttt{targeted\_analysis\_results.json} so that the steering stage can reuse the empirical mean activations for norm calibration.
 
-A methodological note is important here. The original draft proposed contrasting overtly benign and overtly harmful prompts. Pilot runs showed that this gives weak diagnostic signal, because the IT model's most differentially active features often fire on lexical cues such as ``how to,'' ``create,'' or ``make'' rather than on semantic harm. Near-boundary, ambiguously framed prompts would likely provide a stronger test, and this is treated as a limitation rather than ignored.
+A methodological note: the original draft proposed contrasting overtly benign and overtly harmful prompts. Pilot runs showed weak diagnostic signal from this, because the IT model's most differentially active features often fire on lexical cues (``how to,'' ``create,'' ``make'') rather than on semantic harm. Near-boundary, ambiguously framed prompts would likely provide a stronger test; this is treated as a limitation.
 
 \subsection{Automated Feature Labelling}
 \label{subsec:feature-labelling}
 
-For each feature category---preserved, modified, PT-exclusive, and IT-exclusive---50 features are sampled and labelled. For each selected feature, the 20 highest-activating sequences from the 5K-sequence FineWeb sample are collected, with activating tokens flagged using \texttt{>>>...<<<} markers. These examples are then sent in parallel to two LLMs.
+For each feature category (preserved, modified, PT-exclusive, IT-exclusive), 50 features are sampled and labelled. For each, the 20 highest-activating sequences from the 5K-sequence FineWeb sample are collected, with activating tokens flagged using \texttt{>>>...<<<} markers, and sent to two LLMs in parallel.
 
-Claude Haiku 4.5 is queried through a structured-output schema that requests a free-text description, a categorical label from the set \{\texttt{language\_syntax}, \texttt{knowledge\_semantics}, \texttt{instruction\_style}, \texttt{safety\_alignment}, \texttt{formatting}, \texttt{other}\}, and a confidence rating from 1 to 5. GPT-5.4-nano is queried with the same schema and prompt. Outputs are saved separately to \texttt{feature\_labels\_claude.json} and \texttt{feature\_labels\_openai.json}.
+Claude Haiku 4.5 is queried through a structured-output schema requesting a free-text description, a categorical label from \{\texttt{language\_syntax}, \texttt{knowledge\_semantics}, \texttt{instruction\_style}, \texttt{safety\_alignment}, \texttt{formatting}, \texttt{other}\}, and a confidence rating from 1 to 5. GPT-5.4-nano is queried with the same schema and prompt. Outputs are saved separately to \texttt{feature\_labels\_claude.json} and \texttt{feature\_labels\_openai.json}.
 
-Inter-model agreement is computed per category and yields an overall rate of about 59.5\%. Agreement is highest for preserved features and degrades as features become more ambiguous, which is the expected pattern. The two annotators most often disagree on the boundary between \texttt{language\_syntax} and \texttt{instruction\_style}, suggesting that many instruction-following cues are realised through syntactic markers. A high-confidence consensus subset is then constructed by retaining only features for which both models report confidence at least 4. This consensus list is the subset used for downstream steering selection.
+Inter-model agreement is about 59.5\% overall. Agreement is highest for preserved features and degrades as features become more ambiguous, as expected. The two annotators most often disagree on the boundary between \texttt{language\_syntax} and \texttt{instruction\_style}, suggesting that many instruction-following cues are realised through syntactic markers. A high-confidence consensus subset is constructed by retaining only features where both models report confidence at least 4, and this subset is used for downstream steering selection.
 
-Claude Haiku is preferred over a larger Anthropic model because the labelling task is essentially short-context pattern recognition, and pilot validation did not reveal a quality difference large enough to justify the cost increase.
+Claude Haiku was preferred over a larger Anthropic model because the labelling task is short-context pattern recognition, and pilot validation showed no quality difference large enough to justify the cost increase.
 
 \subsection{Causal Verification via Activation Steering}
 \label{subsec:causal-verification}
@@ -57,4 +57,4 @@ Each feature is tested across nine prompts spanning instruction, safety, and neu
 \subsection{Implementation Notes}
 \label{subsec:implementation-notes}
 
-All experiments are conducted in Python in a Jupyter notebook on a single GPU with roughly 79 GB VRAM. Models are loaded in \texttt{bfloat16}; SAE encoding runs in float32 to match Gemma Scope training precision. The random seed is fixed at 42 for sampling and prompt ordering. SAELens is used for SAE loading and steering hooks, the Anthropic Python SDK for structured Claude outputs, and OpenAI's official client for GPT-4.1-nano labelling. Intermediate artefacts---classification masks, labels from both annotators, the consensus list, the targeted analysis JSON, and the steering results JSON---are all written to disk so that later stages can be rerun independently.
+All experiments run in Python in a Jupyter notebook on a single GPU with roughly 79 GB VRAM. Models are loaded in \texttt{bfloat16}; SAE encoding runs in float32 to match Gemma Scope training precision. The random seed is fixed at 42. SAELens is used for SAE loading and steering hooks, the Anthropic Python SDK for structured Claude outputs, and OpenAI's client for GPT-4.1-nano labelling. Intermediate artefacts (classification masks, labels from both annotators, the consensus list, targeted analysis JSON, steering results JSON) are all written to disk so that later stages can be rerun independently.
