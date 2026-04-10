@@ -31,7 +31,6 @@ A descriptive pipeline is only as trustworthy as its boundary conditions are cle
 
 \subsubsection{Cross-SAE Direction Robustness Check}
 \label{subsubsec:cross-sae-direction-robustness-check}
-\label{subsec:rq3-results}
 
 The Chapter 6 findings rely on two assumptions about SAE decoder directions worth testing separately. First, that these directions are not arbitrary but correspond to structured axes of variation in the residual stream. Second, that a decoder direction learned on one checkpoint retains structural meaning when applied to the other, which is what justifies the cross-model classification of \S5.4. Both can be examined by a simple intervention experiment: inject a real SAE decoder direction into a model's residual stream and compare the resulting distributional shift to the shift from a random unit vector of the same magnitude. If learned directions are structured in a way that matters for computation, real and random directions should produce measurably different effects.
 
