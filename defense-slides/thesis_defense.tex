@@ -1,0 +1,376 @@
+\documentclass[aspectratio=169,11pt]{beamer}
+
+\usetheme{default}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\renewcommand{\familydefault}{\sfdefault}
+\usepackage{tikz}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usetikzlibrary{positioning,arrows.meta,calc,backgrounds}
+\graphicspath{{../graphics/}{graphics/}}
+
+% Palette
+\definecolor{ink}{HTML}{0B0B0E}
+\definecolor{inktwo}{HTML}{2A2A30}
+\definecolor{muted}{HTML}{6E6E78}
+\definecolor{rule}{HTML}{D9D9DE}
+\definecolor{paper}{HTML}{FAFAF7}
+\definecolor{papersoft}{HTML}{F2F2EE}
+\definecolor{accent}{HTML}{002F91}
+\definecolor{accentsoft}{HTML}{E6ECF7}
+\definecolor{amber}{HTML}{F59E0B}
+\definecolor{ambersoft}{HTML}{FEF3C7}
+
+\setbeamercolor{background canvas}{bg=paper}
+\setbeamercolor{normal text}{fg=inktwo,bg=paper}
+\setbeamercolor{title}{fg=ink}
+\setbeamercolor{frametitle}{fg=ink}
+\setbeamercolor{structure}{fg=accent}
+\setbeamercolor{itemize item}{fg=accent}
+
+\setbeamertemplate{navigation symbols}{}
+\setbeamertemplate{headline}{}
+\setbeamertemplate{footline}{}
+
+\setbeamerfont{frametitle}{size=\Large,series=\bfseries}
+
+\newcommand{\chip}[1]{
+  \begin{tikzpicture}[baseline=(n.base)]
+    \node[draw=rule,fill=papersoft,rounded corners=2pt,inner xsep=6pt,inner ysep=3pt] (n) {\scriptsize\textsf{#1}};
+  \end{tikzpicture}
+}
+
+\begin{document}
+
+% 1. Title
+\begin{frame}[plain]
+  \vspace{0.3cm}
+  {\color{ink}\Huge\textbf{The Impact of Post-Training}}\\[0.12cm]
+  {\color{ink}\Huge\textbf{Techniques on Feature Representations}}
+
+  \vspace{0.65cm}
+  {\color{muted}\normalsize Alberto Puliga}\\[0.08cm]
+  {\color{muted}\normalsize BCSAI - IE University}
+\end{frame}
+
+% 2. Problem and motivation
+\begin{frame}[plain]
+  \vspace*{0pt}
+  {\color{ink}\fontsize{22}{24}\selectfont\textbf{Deployment outpaces}\par}
+  \vspace{-0.06cm}
+  {\color{ink}\fontsize{22}{24}\selectfont\textbf{understanding}\par}
+
+  \vspace{0.8cm}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{0.31\textwidth}
+    {\Large\color{ink}\textbf{High-stakes}}\\[0.16cm]
+    {\color{muted}\rule{\linewidth}{0.35pt}}\\[0.16cm]
+    {\normalsize\color{inktwo}LLMs are now deployed in medicine, law, financial institutions, military, etc.}
+
+    \column{0.31\textwidth}
+    {\Large\color{ink}\textbf{Black Boxes}}\\[0.16cm]
+    {\color{muted}\rule{\linewidth}{0.35pt}}\\[0.16cm]
+    {\normalsize\color{inktwo}We can evaluate outputs, but not the internal computations behind them.}
+
+    \column{0.31\textwidth}
+    {\Large\color{ink}\textbf{Deeper problem}}\\[0.16cm]
+    {\color{muted}\rule{\linewidth}{0.35pt}}\\[0.16cm]
+    {\normalsize\color{inktwo}Behavioral changes are easy to measure, but what happens inside the model is not clear.}
+  \end{columns}
+\end{frame}
+
+% 3. Pre-training -> post-training
+\begin{frame}{Training Pipeline}
+  \vspace{0.35cm}
+  \begin{center}
+    \begin{tikzpicture}[x=1cm,y=1cm]
+      \coordinate (s0) at (0,0);
+      \coordinate (s1) at (5.2,0);
+      \coordinate (s2) at (10.4,0);
+
+      \draw[line width=0.5pt,color=rule] (s0) -- (s2);
+
+      \node[anchor=south,font=\small\bfseries,align=center] at ($(s0)+(0,0.28)$) {Pre-training\\[-0.05cm]{\normalfont\scriptsize\color{muted}(knowledge)}};
+      \node[anchor=south,font=\small\bfseries,align=center] at ($(s1)+(0,0.28)$) {Post-training\\[-0.05cm]{\normalfont\scriptsize\color{muted}(behaviour)}};
+      \node[anchor=south,font=\small\bfseries] at ($(s2)+(0,0.28)$) {Final model};
+
+      \fill[ink] (s0) circle (0.14);
+      \fill[ink] (s1) circle (0.14);
+      \fill[accent] (s2) circle (0.14);
+
+      \node[align=center,anchor=north,text width=2.9cm] at ($(s0)+(0,-0.48)$) {
+        \small Learn broad language patterns\\
+        \small from internet-scale text
+      };
+      \node[align=center,anchor=north,text width=2.9cm] at ($(s1)+(0,-0.48)$) {
+        \small Align behavior with supervision\\
+        \small and preference optimization
+      };
+      \node[align=center,anchor=north,text width=2.9cm] at ($(s2)+(0,-0.48)$) {
+        \small Final assistant optimized to be\\
+        \small helpful, honest, and harmless
+      };
+    \end{tikzpicture}
+  \end{center}
+
+  \vfill
+\end{frame}
+
+% 4. Mechanistic interpretability motivation
+\begin{frame}{Mechanistic Interpretability}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{0.48\textwidth}
+    \begin{beamercolorbox}[wd=\linewidth,sep=0.22cm,rounded=true]{normal text}
+      \textbf{Goal}\\
+      \small Reverse-engineer neural networks into human-understandable algorithms.
+    \end{beamercolorbox}
+    \column{0.48\textwidth}
+    \begin{beamercolorbox}[wd=\linewidth,sep=0.22cm,rounded=true]{normal text}
+      \textbf{Polysemanticity}\\
+      \small Individual neurons activate for multiple and unrelated concepts.\\[0.08cm]
+      {\footnotesize\color{muted}\# of features \(>\) model dimensions}
+    \end{beamercolorbox}
+  \end{columns}
+  \vspace{0.35cm}
+  \noindent\hspace*{0.22cm}{\textbf{Unit of analysis}}
+
+  \vspace{0.16cm}
+
+  \begin{center}
+    \begin{tikzpicture}[
+      box/.style={draw=rule, fill=papersoft, rounded corners=3pt,
+                  minimum width=4.8cm, minimum height=1.1cm, align=center,
+                  inner sep=5pt, font=\footnotesize},
+      darrow/.style={-{Latex[length=1.8mm]}, color=inktwo},
+    ]
+      \node[box] (n) {Individual neurons};
+      \node[box, fill=accentsoft, right=2.2cm of n] (s) {Activation patterns};
+      \draw[darrow] (n) -- (s);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% 5. SAE explainer
+\begin{frame}{Sparse Autoencoder (SAEs)}
+  \vspace{0.04cm}
+  {\normalsize\color{inktwo}
+  An SAE learns a wide dictionary of directions over a model's activations. A sparse encoder maps each activation to only a handful of active entries; the decoder reconstructs the original. Sparsity forces each dictionary entry to be monosemantic.\par}
+
+  \vspace{0.4cm}
+  \begin{center}
+    \includegraphics[width=0.84\textwidth,height=0.42\textheight,keepaspectratio]{SAE_diagram.png}
+  \end{center}
+
+  \vspace{0.22cm}
+  {\centering\color{accent}\normalsize\textbf{This gives us a feature-level vocabulary for the residual stream}\par}
+  \vspace{0.1cm}
+  {\centering\color{muted}\scriptsize Building on Bricken et al. (2023) and Templeton et al. (2024)\par}
+\end{frame}
+
+% 6. Gap and RQ
+\begin{frame}[plain]
+  \vfill
+  {\centering
+    {\color{ink}\fontsize{23}{27}\selectfont\textbf{How do the features learned during pre-training change after post-training,}\par}
+    \vspace{0.12cm}
+    {\color{ink}\fontsize{23}{27}\selectfont\textbf{and how do they relate to behavioural changes?}\par}
+  }
+  \vfill
+\end{frame}
+
+% 7. Hypothesis
+\begin{frame}{Hypothesis}
+  \begin{beamercolorbox}[wd=\linewidth,sep=0.32cm,rounded=true]{normal text}
+    {\Large\color{ink}\textbf{Empirical claim}}\\[0.2cm]
+    {\normalsize\color{inktwo}
+      Behaviorally central post-training features are mostly \textbf{modified} versions of pre-training features.
+    }
+  \end{beamercolorbox}
+  \vfill
+  \begin{beamercolorbox}[wd=\linewidth,sep=0.18cm,rounded=true]{normal text}
+    {\color{muted}\scriptsize
+    "Modified" = matched either by decoder cosine similarity or activation correlation across checkpoints, but with shifted direction or function.\par}
+  \end{beamercolorbox}
+\end{frame}
+
+% 8. Methodology
+\begin{frame}{Methodology}{\textcolor{muted}{4 Stage Pipeline}}
+  \begin{center}
+    \begin{tikzpicture}[
+      x=1cm, y=1cm,
+      box/.style={draw=rule, fill=papersoft, rounded corners=3pt,
+                  minimum height=0.78cm, align=center,
+                  inner sep=5pt, font=\footnotesize},
+      darrow/.style={-{Latex[length=1.8mm]}, color=inktwo},
+    ]
+      \node[box, minimum width=1.7cm] (fw) at (-3.7,0.75) {FineWeb Corpus};
+
+      \node[box, minimum width=2.0cm] (m1) at (-0.8,1.45) {\shortstack[c]{\scriptsize Gemma 3 1B\\[-1pt]\textcolor{muted}{\fontsize{4.5pt}{5pt}\selectfont Base model}}};
+      \node[box, minimum width=2.0cm] (m2) at (-0.8,0.05) {\shortstack[c]{\scriptsize Gemma 3 1B\\[-1pt]\textcolor{muted}{\fontsize{4.5pt}{5pt}\selectfont IT model}}};
+
+      \node[box, minimum width=1.7cm] (a1) at (1.65,1.45) {Activations};
+      \node[box, minimum width=1.3cm] (b1) at (3.75,1.45) {\shortstack[c]{\scriptsize SAE\\[-1pt]\textcolor{muted}{\fontsize{4.5pt}{5pt}\selectfont Layer 13}}};
+      \node[box, minimum width=1.8cm] (c1) at (5.9,1.45) {\shortstack[c]{\scriptsize Dictionary\\[-1pt]\textcolor{muted}{\fontsize{4.5pt}{5pt}\selectfont Base}}};
+
+      \node[box, minimum width=1.7cm] (a2) at (1.65,0.05) {Activations};
+      \node[box, minimum width=1.3cm] (b2) at (3.75,0.05) {\shortstack[c]{\scriptsize SAE\\[-1pt]\textcolor{muted}{\fontsize{4.5pt}{5pt}\selectfont Layer 13}}};
+      \node[box, minimum width=1.8cm] (c2) at (5.9,0.05) {\shortstack[c]{\scriptsize Dictionary\\[-1pt]\textcolor{muted}{\fontsize{4.5pt}{5pt}\selectfont IT}}};
+
+      \node[draw=accent, fill=paper, rounded corners=3pt,
+            inner sep=5pt, font=\footnotesize] (joint) at (8.1,0.75) {
+        \textbf{Analysis}
+      };
+      \coordinate (mergeTop) at ($(c1.east)+(0.35,0)$);
+      \coordinate (mergeBot) at ($(c2.east)+(0.35,0)$);
+      \coordinate (mergeMid) at ($(mergeTop)!0.5!(mergeBot)$);
+
+      \draw[darrow] (fw.east) -- ++(0.25,0) |- (m1.west);
+      \draw[darrow] (fw.east) -- ++(0.25,0) |- (m2.west);
+      \draw[darrow] (m1.east) -- (a1.west);
+      \draw[darrow] (a1.east) -- (b1.west);
+      \draw[darrow] (b1.east) -- (c1.west);
+      \draw[darrow] (m2.east) -- (a2.west);
+      \draw[darrow] (a2.east) -- (b2.west);
+      \draw[darrow] (b2.east) -- (c2.west);
+
+      \draw[-,color=accent] (c1.east) -- (mergeTop);
+      \draw[-,color=accent] (c2.east) -- (mergeBot);
+      \draw[-,color=accent] (mergeTop) -- (mergeBot);
+      \draw[-,color=accent] (mergeMid) -- (joint.west);
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
+% 10. Result 1
+\begin{frame}{Result 1: Modified Features Lead}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{0.60\textwidth}
+    \begin{tikzpicture}[x=0.68cm,y=0.7cm]
+      \fill[accent!65!muted] (0,0) rectangle (0.45,0.4);
+      \node[anchor=west] at (0.55,0.2) {\scriptsize Preserved (241)};
+      \fill[accent] (0,0.7) rectangle (6.2,1.1);
+      \node[anchor=west] at (6.3,0.9) {\scriptsize Modified (4,017)};
+      \fill[inktwo] (0,1.4) rectangle (6.0,1.8);
+      \node[anchor=west] at (6.1,1.6) {\scriptsize PT-exclusive (3,884)};
+      \fill[muted] (0,2.1) rectangle (2.9,2.5);
+      \node[anchor=west] at (3.0,2.3) {\scriptsize IT-exclusive (1,899)};
+    \end{tikzpicture}
+    
+    \vspace{0.18cm}
+    {\small\color{muted}\textbf{25} threshold pairs tested}
+    \column{0.36\textwidth}
+    {\normalsize\color{accent}\textbf{Interpretation: post-training mostly reshapes}}\\
+    {\normalsize\color{accent}\textbf{pre-training features, rather than creating}}\\
+    {\normalsize\color{accent}\textbf{entirely new ones.}}
+  \end{columns}
+\end{frame}
+
+% 11. Result 2
+\begin{frame}{Result 2: Instruction-Following Signal Is Shared}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{0.42\textwidth}
+    {\Huge\color{accent}\textbf{19/20}}\\[0.08cm]
+    {\small top IT features labeled}\\[0.04cm]
+    {\small\textsf{instruction\_style}}\\[0.28cm]
+    {\small Shared top indices in PT and IT}\\[0.08cm]
+    \chip{2006}\hspace{0.12cm}\chip{446}
+    \column{0.56\textwidth}
+    \begin{beamercolorbox}[wd=\linewidth,sep=0.25cm,rounded=true]{normal text}
+      \small In PT these indices still show large effects (\(+114.3\), \(+37.5\)).\\
+      \small They belong to the \textbf{modified} class, not IT-exclusive.
+    \end{beamercolorbox}
+    \vspace{0.22cm}
+    {\normalsize\color{accent}\textbf{Interpretation: amplification and sharpening,}}\\
+    {\normalsize\color{accent}\textbf{not de novo creation.}}
+  \end{columns}
+\end{frame}
+
+% 12. Result 3
+\begin{frame}{Result 3: Safety Features Also Overlap}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{0.52\textwidth}
+    \textbf{IT Top-20 safety labels}
+    \begin{tikzpicture}[x=1cm,y=0.6cm]
+      \fill[accent] (0,0) rectangle (4.0,0.35);
+      \node[anchor=west] at (4.15,0.18) {\scriptsize 8 safety\_alignment};
+      \fill[inktwo] (0,0.6) rectangle (3.0,0.95);
+      \node[anchor=west] at (3.15,0.78) {\scriptsize 6 knowledge\_semantics};
+      \fill[muted] (0,1.2) rectangle (2.5,1.55);
+      \node[anchor=west] at (2.65,1.38) {\scriptsize 5 instruction\_style};
+    \end{tikzpicture}
+    \column{0.48\textwidth}
+    {\small Shared high-rank indices}\\[0.08cm]
+    \chip{262}\hspace{0.12cm}\chip{2184}\\[0.24cm]
+    \begin{beamercolorbox}[wd=\linewidth,sep=0.22cm,rounded=true]{normal text}
+      \small No IT top-20 safety feature is IT-exclusive.\\
+      \small Safety shifts are real, but mostly on shared PT substrate.
+    \end{beamercolorbox}
+  \end{columns}
+\end{frame}
+
+% 13. Limitations
+\begin{frame}{Limitations}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{0.32\textwidth}
+    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
+      \textbf{Correlational evidence}\\[0.08cm]
+      \small The analysis links feature shifts to behavior, but it does not yet prove that those features causally drive the behavior.
+    \end{beamercolorbox}
+
+    \column{0.32\textwidth}
+    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
+      \textbf{Narrow experimental scope}\\[0.08cm]
+      \small Results come from one matched PT/IT model pair, one architecture scale, and one layer rather than a broad cross-model study.
+    \end{beamercolorbox}
+
+    \column{0.32\textwidth}
+    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
+      \textbf{Imperfect semantic labeling}\\[0.08cm]
+      \small Feature taxonomy is useful but noisy: labels are partly interpretive, and inter-annotator agreement reached about 60\%.
+    \end{beamercolorbox}
+  \end{columns}
+
+  \vspace{0.45cm}
+\end{frame}
+
+% 14. Conclusion
+\begin{frame}{Conclusion}
+  \begin{beamercolorbox}[wd=\linewidth,sep=0.3cm,rounded=true]{normal text}
+    {\Large\color{ink}\textbf{Main takeaway}}\\[0.14cm]
+    {\normalsize\color{inktwo}Post-training appears to act less by creating entirely new internal structure and more by \textbf{reorganizing, amplifying, and sharpening existing pre-training features}.}
+  \end{beamercolorbox}
+
+  \vspace{0.35cm}
+  \begin{itemize}
+    \item Modified features dominate the matched dictionaries, while preserved features remain a small minority.
+    \item The strongest instruction-following and safety-related IT features mostly trace back to shared PT substrate rather than to purely IT-exclusive features.
+    \item The evidence therefore supports a \textbf{weak but consistent claim}: behaviorally central post-training features are usually transformed versions of pre-training features.
+  \end{itemize}
+\end{frame}
+
+% 15. Next steps
+\begin{frame}{Next Steps}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{0.32\textwidth}
+    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
+      \textbf{1. Test causality}\\[0.08cm]
+      \small Intervene on high-impact modified features and check whether steering them changes refusal or instruction-following behavior.
+    \end{beamercolorbox}
+
+    \column{0.32\textwidth}
+    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
+      \textbf{2. Expand the scope}\\[0.08cm]
+      \small Replicate the pipeline across more layers, larger model sizes, and different model families to test generality.
+    \end{beamercolorbox}
+
+    \column{0.32\textwidth}
+    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
+      \textbf{3. Improve measurement}\\[0.08cm]
+      \small Refine the labeling scheme and add richer behavioral probes so the feature-behavior link is measured more precisely.
+    \end{beamercolorbox}
+  \end{columns}
+\end{frame}
+
+\end{document}
