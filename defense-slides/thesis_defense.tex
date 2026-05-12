@@ -46,11 +46,11 @@
 
 % 1. Title
 \begin{frame}[plain]
-  \vspace{0.3cm}
+  \vspace{0.95cm}
   {\color{ink}\Huge\textbf{The Impact of Post-Training}}\\[0.12cm]
   {\color{ink}\Huge\textbf{Techniques on Feature Representations}}
 
-  \vspace{0.65cm}
+  \vspace{1.25cm}
   {\color{muted}\normalsize Alberto Puliga}\\[0.08cm]
   {\color{muted}\normalsize BCSAI - IE University}
 \end{frame}
@@ -81,7 +81,24 @@
   \end{columns}
 \end{frame}
 
-% 3. Pre-training -> post-training
+% 3. Claude Golden Gate Bridge example
+\begin{frame}[plain]
+  \vspace*{0.6cm}
+  {\color{ink}\fontsize{22}{24}\selectfont\textbf{Claude Golden Gate}\par}
+
+  \vspace{0.55cm}
+
+  \begin{center}
+    \includegraphics[height=0.68\textheight,keepaspectratio]{claude_golden_gate.png}
+  \end{center}
+
+  \vspace{-0.02cm}
+  \begin{center}
+    {\color{muted}\scriptsize Claude 3 Sonnet after Golden Gate feature steering; Templeton et al. (2024) example.\par}
+  \end{center}
+\end{frame}
+
+% 4. Pre-training -> post-training
 \begin{frame}{Training Pipeline}
   \vspace{0.35cm}
   \begin{center}
@@ -118,7 +135,7 @@
   \vfill
 \end{frame}
 
-% 4. Mechanistic interpretability motivation
+% 5. Mechanistic interpretability motivation
 \begin{frame}{Mechanistic Interpretability}
   \begin{columns}[T,totalwidth=\textwidth]
     \column{0.48\textwidth}
@@ -152,7 +169,7 @@
   \end{center}
 \end{frame}
 
-% 5. SAE explainer
+% 6. SAE explainer
 \begin{frame}{Sparse Autoencoder (SAEs)}
   \vspace{0.04cm}
   {\normalsize\color{inktwo}
@@ -169,7 +186,7 @@
   {\centering\color{muted}\scriptsize Building on Bricken et al. (2023) and Templeton et al. (2024)\par}
 \end{frame}
 
-% 6. Gap and RQ
+% 7. Gap and RQ
 \begin{frame}[plain]
   \vfill
   {\centering
@@ -180,7 +197,7 @@
   \vfill
 \end{frame}
 
-% 7. Hypothesis
+% 8. Hypothesis
 \begin{frame}{Hypothesis}
   \begin{beamercolorbox}[wd=\linewidth,sep=0.32cm,rounded=true]{normal text}
     {\Large\color{ink}\textbf{Empirical claim}}\\[0.2cm]
@@ -188,14 +205,9 @@
       Behaviorally central post-training features are mostly \textbf{modified} versions of pre-training features.
     }
   \end{beamercolorbox}
-  \vfill
-  \begin{beamercolorbox}[wd=\linewidth,sep=0.18cm,rounded=true]{normal text}
-    {\color{muted}\scriptsize
-    "Modified" = matched either by decoder cosine similarity or activation correlation across checkpoints, but with shifted direction or function.\par}
-  \end{beamercolorbox}
 \end{frame}
 
-% 8. Methodology
+% 9. Methodology
 \begin{frame}{Methodology}{\textcolor{muted}{4 Stage Pipeline}}
   \begin{center}
     \begin{tikzpicture}[
@@ -243,7 +255,7 @@
   \end{center}
 \end{frame}
 
-% 9. Methodology analysis
+% 10. Methodology analysis
 \begin{frame}{Methodology}{\textcolor{muted}{Analysis}}
   \vspace{0.1cm}
   \begin{center}
@@ -308,134 +320,162 @@
   \end{center}
 \end{frame}
 
-% 10. Result 1
-\begin{frame}{Result 1: Modified Features Lead}
-  \begin{columns}[T,totalwidth=\textwidth]
-    \column{0.60\textwidth}
-    \begin{tikzpicture}[x=0.68cm,y=0.7cm]
-      \fill[accent!65!muted] (0,0) rectangle (0.45,0.4);
-      \node[anchor=west] at (0.55,0.2) {\scriptsize Preserved (241)};
-      \fill[accent] (0,0.7) rectangle (6.2,1.1);
-      \node[anchor=west] at (6.3,0.9) {\scriptsize Modified (4,017)};
-      \fill[inktwo] (0,1.4) rectangle (6.0,1.8);
-      \node[anchor=west] at (6.1,1.6) {\scriptsize PT-exclusive (3,884)};
-      \fill[muted] (0,2.1) rectangle (2.9,2.5);
-      \node[anchor=west] at (3.0,2.3) {\scriptsize IT-exclusive (1,899)};
+% 10. Results
+\begin{frame}{Results}{\textcolor{muted}{Modified Features Lead}}
+  \vspace{0.40cm}
+  \begin{center}
+    \begin{tikzpicture}[x=0.9cm,y=0.85cm]
+      \fill[accent] (0,2.7) rectangle (6.2,3.05);
+      \node[anchor=west] at (6.35,2.875) {\small Modified (40\%)};
+      \fill[inktwo] (0,1.8) rectangle (6.0,2.15);
+      \node[anchor=west] at (6.15,1.975) {\small PT-exclusive (39\%)};
+      \fill[muted] (0,0.9) rectangle (2.9,1.25);
+      \node[anchor=west] at (3.05,1.075) {\small IT-exclusive (19\%)};
+      \fill[rule] (0,0) rectangle (0.45,0.35);
+      \node[anchor=west] at (0.6,0.175) {\small Preserved (2\%)};
     \end{tikzpicture}
-    
-    \vspace{0.18cm}
-    {\small\color{muted}\textbf{25} threshold pairs tested}
-    \column{0.36\textwidth}
-    {\normalsize\color{accent}\textbf{Interpretation: post-training mostly reshapes}}\\
-    {\normalsize\color{accent}\textbf{pre-training features, rather than creating}}\\
-    {\normalsize\color{accent}\textbf{entirely new ones.}}
-  \end{columns}
-\end{frame}
+  \end{center}
 
-% 11. Result 2
-\begin{frame}{Result 2: Instruction-Following Signal Is Shared}
-  \begin{columns}[T,totalwidth=\textwidth]
-    \column{0.42\textwidth}
-    {\Huge\color{accent}\textbf{19/20}}\\[0.08cm]
-    {\small top IT features labeled}\\[0.04cm]
-    {\small\textsf{instruction\_style}}\\[0.28cm]
-    {\small Shared top indices in PT and IT}\\[0.08cm]
-    \chip{2006}\hspace{0.12cm}\chip{446}
-    \column{0.56\textwidth}
-    \begin{beamercolorbox}[wd=\linewidth,sep=0.25cm,rounded=true]{normal text}
-      \small In PT these indices still show large effects (\(+114.3\), \(+37.5\)).\\
-      \small They belong to the \textbf{modified} class, not IT-exclusive.
-    \end{beamercolorbox}
-    \vspace{0.22cm}
-    {\normalsize\color{accent}\textbf{Interpretation: amplification and sharpening,}}\\
-    {\normalsize\color{accent}\textbf{not de novo creation.}}
-  \end{columns}
-\end{frame}
+  \vfill
 
-% 12. Result 3
-\begin{frame}{Result 3: Safety Features Also Overlap}
-  \begin{columns}[T,totalwidth=\textwidth]
-    \column{0.52\textwidth}
-    \textbf{IT Top-20 safety labels}
-    \begin{tikzpicture}[x=1cm,y=0.6cm]
-      \fill[accent] (0,0) rectangle (4.0,0.35);
-      \node[anchor=west] at (4.15,0.18) {\scriptsize 8 safety\_alignment};
-      \fill[inktwo] (0,0.6) rectangle (3.0,0.95);
-      \node[anchor=west] at (3.15,0.78) {\scriptsize 6 knowledge\_semantics};
-      \fill[muted] (0,1.2) rectangle (2.5,1.55);
-      \node[anchor=west] at (2.65,1.38) {\scriptsize 5 instruction\_style};
-    \end{tikzpicture}
-    \column{0.48\textwidth}
-    {\small Shared high-rank indices}\\[0.08cm]
-    \chip{262}\hspace{0.12cm}\chip{2184}\\[0.24cm]
-    \begin{beamercolorbox}[wd=\linewidth,sep=0.22cm,rounded=true]{normal text}
-      \small No IT top-20 safety feature is IT-exclusive.\\
-      \small Safety shifts are real, but mostly on shared PT substrate.
-    \end{beamercolorbox}
-  \end{columns}
-\end{frame}
-
-% 13. Limitations
-\begin{frame}{Limitations}
-  \begin{columns}[T,totalwidth=\textwidth]
-    \column{0.32\textwidth}
-    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
-      \textbf{Correlational evidence}\\[0.08cm]
-      \small The analysis links feature shifts to behavior, but it does not yet prove that those features causally drive the behavior.
-    \end{beamercolorbox}
-
-    \column{0.32\textwidth}
-    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
-      \textbf{Narrow experimental scope}\\[0.08cm]
-      \small Results come from one matched PT/IT model pair, one architecture scale, and one layer rather than a broad cross-model study.
-    \end{beamercolorbox}
-
-    \column{0.32\textwidth}
-    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
-      \textbf{Imperfect semantic labeling}\\[0.08cm]
-      \small Feature taxonomy is useful but noisy: labels are partly interpretive, and inter-annotator agreement reached about 60\%.
-    \end{beamercolorbox}
-  \end{columns}
-
-  \vspace{0.45cm}
-\end{frame}
-
-% 14. Conclusion
-\begin{frame}{Conclusion}
-  \begin{beamercolorbox}[wd=\linewidth,sep=0.3cm,rounded=true]{normal text}
-    {\Large\color{ink}\textbf{Main takeaway}}\\[0.14cm]
-    {\normalsize\color{inktwo}Post-training appears to act less by creating entirely new internal structure and more by \textbf{reorganizing, amplifying, and sharpening existing pre-training features}.}
+  \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
+    {\centering\normalsize\color{accent}\textbf{Post-training mostly reshapes pre-training features}\par}
   \end{beamercolorbox}
+\end{frame}
+
+% 11. Results (instruction contrast)
+\begin{frame}{Results}{\textcolor{muted}{Did IT Create New Instruction Features?}}
+  \vfill
+
+  {\centering
+    {\fontsize{38}{42}\selectfont\color{accent}\textbf{Mostly no}}\par
+  }
+
+  \vspace{0.65cm}
+
+  \begin{columns}[c,totalwidth=\textwidth]
+    \column{0.34\textwidth}
+    \centering
+    {\fontsize{30}{34}\selectfont\bfseries 19/20}\\[0.10cm]
+    {\small\color{muted}instruction-style}\\[0.14cm]
+    {\scriptsize\color{muted}%
+      Top-ranked IT features on the\\[-0.05cm]
+      Alpaca vs.\ TruthfulQA contrast}
+
+    \column{0.32\textwidth}
+    \centering
+    {\fontsize{30}{34}\selectfont\bfseries 2/5}\\[0.10cm]
+    {\small\color{muted}PT top-5 overlap}\\[0.14cm]
+    {\scriptsize\color{muted}%
+      Same indices in IT and PT\\[-0.05cm]
+      top-5 under that contrast}
+
+    \column{0.34\textwidth}
+    \centering
+    \chip{2006}\ \chip{446}\\[0.10cm]
+    {\small\color{muted}\(+114.3\), \(+37.5\) in PT}\\[0.14cm]
+    {\scriptsize\color{muted}%
+      Example shared features;\\[-0.05cm]
+      per-prompt activation deltas}
+  \end{columns}
+
+  \vfill
+
+  {\centering\normalsize\color{inktwo}\textbf{Shared} and \textbf{modified}, not IT-exclusive.\par}
 
   \vspace{0.35cm}
-  \begin{itemize}
-    \item Modified features dominate the matched dictionaries, while preserved features remain a small minority.
-    \item The strongest instruction-following and safety-related IT features mostly trace back to shared PT substrate rather than to purely IT-exclusive features.
-    \item The evidence therefore supports a \textbf{weak but consistent claim}: behaviorally central post-training features are usually transformed versions of pre-training features.
-  \end{itemize}
 \end{frame}
 
-% 15. Next steps
-\begin{frame}{Next Steps}
+% 12. Main takeaway
+\begin{frame}{Main takeaway}
+  \begin{beamercolorbox}[wd=\linewidth,sep=0.3cm,rounded=true]{normal text}
+    {\normalsize\color{inktwo}Post-training appears to mainly \textbf{reorganize, amplify, and sharpen existing pre-training features}, rather than creating entirely new internal structure.}
+  \end{beamercolorbox}
+
+  \vspace{0.2cm}
+
+  \begin{beamercolorbox}[wd=\linewidth,sep=0.3cm]{normal text}
+    {\normalsize\color{inktwo}The evidence therefore supports a \textbf{weak but consistent claim}:}
+    \begin{itemize}
+      \item Behaviorally central post-training features are usually transformed versions of pre-training features.
+    \end{itemize}
+  \end{beamercolorbox}
+\end{frame}
+
+% 14. Limitations & next steps
+\begin{frame}{Limitations \& Next Steps}
+  \vspace{0.15cm}
   \begin{columns}[T,totalwidth=\textwidth]
-    \column{0.32\textwidth}
-    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
-      \textbf{1. Test causality}\\[0.08cm]
-      \small Intervene on high-impact modified features and check whether steering them changes refusal or instruction-following behavior.
-    \end{beamercolorbox}
+    \column{0.31\textwidth}
+    \begin{minipage}[t][2.6cm][t]{\linewidth}
+      {\large\color{ink}\textbf{Correlational evidence}}\\[0.12cm]
+      {\color{muted}\rule{\linewidth}{0.35pt}}\\[0.12cm]
+      {\scriptsize\color{inktwo}The analysis links feature shifts to behavior, but does not yet prove causal effects.}
+    \end{minipage}
 
-    \column{0.32\textwidth}
-    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
-      \textbf{2. Expand the scope}\\[0.08cm]
-      \small Replicate the pipeline across more layers, larger model sizes, and different model families to test generality.
-    \end{beamercolorbox}
+    \vspace{0.18cm}
+    {\scriptsize\color{accent}\textbf{Next:} Test whether steering high-impact modified features affects model behavior.}
 
-    \column{0.32\textwidth}
-    \begin{beamercolorbox}[wd=\linewidth,sep=0.24cm,rounded=true]{normal text}
-      \textbf{3. Improve measurement}\\[0.08cm]
-      \small Refine the labeling scheme and add richer behavioral probes so the feature-behavior link is measured more precisely.
-    \end{beamercolorbox}
+    \column{0.31\textwidth}
+    \begin{minipage}[t][2.6cm][t]{\linewidth}
+      {\large\color{ink}\textbf{Imperfect labeling}}\\[0.12cm]
+      {\color{muted}\rule{\linewidth}{0.35pt}}\\[0.12cm]
+      {\scriptsize\color{inktwo}Labels are partly interpretive; inter-annotator agreement reached about 60\%.}
+    \end{minipage}
+
+    \vspace{0.18cm}
+    {\scriptsize\color{accent}\textbf{Next:} Refine the labeling strategy.}
+
+    \column{0.31\textwidth}
+    \begin{minipage}[t][2.6cm][t]{\linewidth}
+      {\large\color{ink}\textbf{Narrow scope}}\\[0.12cm]
+      {\color{muted}\rule{\linewidth}{0.35pt}}\\[0.12cm]
+      {\scriptsize\color{inktwo}One model family, one architecture size, and one layer only.}
+    \end{minipage}
+
+    \vspace{0.18cm}
+    {\scriptsize\color{accent}\textbf{Next:} Replicate the pipeline across more layers, model sizes, and model families.}
   \end{columns}
+\end{frame}
+
+% 15. Why this matters
+\begin{frame}{Why this matters}
+  \vspace{0.1cm}
+  \begin{columns}[T,totalwidth=\textwidth]
+    \column{0.48\textwidth}
+    \begin{minipage}[t][3.45cm][t]{\linewidth}
+      {\large\color{ink}\textbf{Behavior is not representation}}\\[0.14cm]
+      {\color{muted}\rule{\linewidth}{0.35pt}}\\[0.14cm]
+      {\small\color{inktwo}
+      Benchmarks measure outputs.\\[0.08cm]
+      They do not reveal internal structure.\\[0.08cm]
+      Safety still rests on fragile representations.}
+    \end{minipage}
+
+    \column{0.48\textwidth}
+    \begin{minipage}[t][3.45cm][t]{\linewidth}
+      {\large\color{ink}\textbf{Interpretability must catch up}}\\[0.14cm]
+      {\color{muted}\rule{\linewidth}{0.35pt}}\\[0.14cm]
+      {\small\color{inktwo}
+      Deployment is ahead of understanding.\\[0.08cm]
+      SAEs are starting to close that gap.\\[0.08cm]
+      The real test is applying them to deployed frontier models.}
+    \end{minipage}
+  \end{columns}
+
+  \vfill
+
+  \begin{beamercolorbox}[wd=\linewidth,sep=0.26cm,rounded=true]{normal text}
+    {\centering\normalsize\color{accent}\textbf{This is an important and necessary step towards safer,\\ more reliable and aligned models}\par}
+  \end{beamercolorbox}
+\end{frame}
+
+\begin{frame}[plain]
+  \vfill
+  \begin{center}
+    {\color{ink}\Huge\textbf{Questions}}
+  \end{center}
+  \vfill
 \end{frame}
 
 \end{document}
