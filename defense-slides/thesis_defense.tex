@@ -243,6 +243,71 @@
   \end{center}
 \end{frame}
 
+% 9. Methodology analysis
+\begin{frame}{Methodology}{\textcolor{muted}{Analysis}}
+  \vspace{0.1cm}
+  \begin{center}
+    \begin{tikzpicture}[
+      x=1cm, y=1cm,
+      stepbox/.style={draw=rule, line width=0.7pt, fill=paper,
+                      rounded corners=5pt, minimum width=3.2cm,
+                      minimum height=3.8cm, text width=2.7cm,
+                      align=left, inner sep=8pt, font=\scriptsize},
+      link/.style={-{Latex[length=2mm]}, line width=0.55pt, color=inktwo},
+      guide/.style={-{Latex[length=1.6mm]}, dashed, color=muted},
+    ]
+      \node[stepbox, minimum width=3.8cm, text width=3.25cm] (classify) at (-4.35,0.65) {
+        \begin{minipage}[t][2.95cm][t]{3.25cm}
+          \raggedright
+          {\color{ink}\normalsize\textbf{1. Classify}}\\[0.16cm]
+          4 Classes\\[0.10cm]
+          \textbullet\ Preserved\\
+          \textbullet\ Modified\\
+          \textbullet\ PT-exclusive\\
+          \textbullet\ IT-exclusive\\[0.16cm]
+          {\color{muted}\fontsize{6.2pt}{6.8pt}\selectfont \mbox{$\tau_d$ = decoder cosine sim}}\\
+          {\color{muted}\fontsize{6.2pt}{6.8pt}\selectfont \mbox{$\tau_a$ = activation correlation}}
+        \end{minipage}
+      };
+
+      \node[stepbox, minimum width=3.8cm, text width=3.25cm] (label) at (0,0.65) {
+        \begin{minipage}[t][2.95cm][t]{3.25cm}
+          \raggedright
+          {\color{ink}\normalsize\textbf{2. Label}}\\[0.16cm]
+          200 features sampled\\
+          by activation frequency\\[0.16cm]
+          Dual-LLM consensus\\[0.08cm]
+          {\color{muted}Claude Haiku 4.5}\\
+          {\color{muted}GPT-5.4-nano}\\[0.16cm]
+          6 semantic categories\\[0.04cm]
+          {\color{muted}\fontsize{5.8pt}{6.4pt}\selectfont
+          e.g.\ Syntax, Instruction, Safety...}
+        \end{minipage}
+      };
+
+      \node[stepbox, minimum width=3.8cm, text width=3.25cm] (probe) at (4.35,0.65) {
+        \begin{minipage}[t][2.95cm][t]{3.25cm}
+          \raggedright
+          {\color{ink}\normalsize\textbf{3. Probe}}\\[0.16cm]
+          Welch t-tests per feature\\[0.16cm]
+          Safety contrast\\
+          {\color{muted}JBB harmful vs benign}\\[0.14cm]
+          Instruction contrast\\
+          {\color{muted}Alpaca vs TruthfulQA}
+        \end{minipage}
+      };
+
+      \draw[link] (classify.east) -- (label.west);
+      \draw[link] (label.east) -- (probe.west);
+
+      \node[align=center, text=accent, font=\normalsize\bfseries] (question) at (0,-2.55) {
+        Which class do the behaviourally relevant features belong to?
+      };
+
+    \end{tikzpicture}
+  \end{center}
+\end{frame}
+
 % 10. Result 1
 \begin{frame}{Result 1: Modified Features Lead}
   \begin{columns}[T,totalwidth=\textwidth]
